@@ -1,4 +1,4 @@
-package net.sytes.judgeglass.lwjgl.renderEngine;
+package net.sytes.judgeglass.lwjgl.renderEngine.models;
 
 public class RawModel {
 	private int vaoID;
