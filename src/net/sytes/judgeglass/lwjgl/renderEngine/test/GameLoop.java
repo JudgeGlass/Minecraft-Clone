@@ -1,6 +1,7 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.test;
 
 import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector3f;
 
 import net.sytes.judgeglass.lwjgl.renderEngine.DisplayManager;
 import net.sytes.judgeglass.lwjgl.renderEngine.Loader;
@@ -8,6 +9,7 @@ import net.sytes.judgeglass.lwjgl.renderEngine.Renderer;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.RawModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.shaders.StaticShader;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.Maths;
 import textures.ModelTexture;
 
 public class GameLoop {
@@ -45,7 +47,6 @@ public class GameLoop {
 		while(!Display.isCloseRequested()) {
 			renderer.prepare();
 			shader.start();
-			
 			
 			renderer.render(textureModel);
 			

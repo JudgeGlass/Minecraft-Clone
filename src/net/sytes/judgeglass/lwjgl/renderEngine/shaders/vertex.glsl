@@ -5,7 +5,9 @@ in vec2 textureCoords;
 
 out vec2 pass_textureCoords;
 
+uniform mat4 transformationMatrix;
+
 void main(void){
-	gl_Position = vec4(position, 1);
+	gl_Position = transformationMatrix * vec4(position, 1);
 	pass_textureCoords = textureCoords;
 }

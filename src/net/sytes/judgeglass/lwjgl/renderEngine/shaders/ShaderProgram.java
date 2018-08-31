@@ -6,11 +6,18 @@ import static org.lwjgl.opengl.GL11.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.FloatBuffer;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 public abstract class ShaderProgram {
 	private int programID;
 	private int vertexShaderID;
 	private int fragmentShaderID;
+	
+	private static FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
 	
 	public ShaderProgram(String vertexFile, String fragmentFile) {
 		vertexShaderID = loadShader(vertexFile, GL_VERTEX_SHADER);
@@ -21,7 +28,14 @@ public abstract class ShaderProgram {
 		bindAttributes();
 		glLinkProgram(programID);
 		glValidateProgram(programID);
+		getAllUniformLocations();
 	}
+	
+	protected int getUniformLocation(String name) {
+		return glGetUniformLocation(programID, name);
+	}
+	
+	protected abstract void getAllUniformLocations();
 	
 	public void start() {
 		glUseProgram(programID);
@@ -45,6 +59,29 @@ public abstract class ShaderProgram {
 	
 	protected void bindAttribute(int attribute, String varName) {
 		glBindAttribLocation(programID, attribute, varName);
+	}
+	
+	protected void loadFloat(int location, float value) {
+		glUniform1f(location, value);
+	}
+	
+	protected void loadVector(int location, Vector3f vec) {
+		glUniform3f(location, vec.x, vec.y, vec.z);
+	}
+	
+	protected void loadBool(int location, boolean value) {
+		float nValue = 0;
+		if(value) {
+			nValue = 1;
+		}
+		
+		glUniform1f(location, nValue);
+	}
+	
+	protected void loadMatrix4f(int location, Matrix4f mat) {
+		mat.store(buffer);
+		buffer.flip();
+		glUniformMatrix4(location, false, buffer);
 	}
 	
 	private static int loadShader(String file, int type) {
