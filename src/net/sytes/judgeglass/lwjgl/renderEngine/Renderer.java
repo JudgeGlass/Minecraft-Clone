@@ -17,9 +17,9 @@ import net.sytes.judgeglass.lwjgl.renderEngine.tools.Maths;
 
 public class Renderer {
 	
-	private static final float FOV = 70;
-	private static final float NEAR = 0.1f;
-	private static final float FAR = 1000;
+	public static final float FOV = 70;
+	public static final float NEAR = 0.1f;
+	public static final float FAR = 1000;
 	
 	private Matrix4f projectionMatrix;
 	
@@ -31,7 +31,8 @@ public class Renderer {
 	}
 	
 	public void prepare() {
-		glClear(GL_COLOR_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0, 0, 0, 1);
 	}
 	

@@ -3,6 +3,7 @@ package net.sytes.judgeglass.lwjgl.renderEngine;
 import static org.lwjgl.opengl.GL11.*;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -23,9 +24,12 @@ public class DisplayManager {
 			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 			Display.setTitle("LWJGL Test");
 			Display.create(new PixelFormat(), attribs);
+			
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
+		
+		Mouse.setGrabbed(true);
 		
 		glViewport(0, 0, WIDTH, HEIGHT);
 	}
