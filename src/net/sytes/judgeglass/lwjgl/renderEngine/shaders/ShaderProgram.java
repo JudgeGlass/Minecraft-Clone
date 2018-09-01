@@ -10,6 +10,7 @@ import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public abstract class ShaderProgram {
@@ -67,6 +68,10 @@ public abstract class ShaderProgram {
 	
 	protected void loadVector(int location, Vector3f vec) {
 		glUniform3f(location, vec.x, vec.y, vec.z);
+	}
+	
+	protected void load2DVector(int location, Vector2f vec) {
+		glUniform2f(location, vec.x, vec.y);
 	}
 	
 	protected void loadBool(int location, boolean value) {

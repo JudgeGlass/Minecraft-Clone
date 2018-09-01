@@ -5,7 +5,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Camera {
-	private Vector3f position = new Vector3f(0, 0, 1);
+	private Vector3f position = new Vector3f(0, 5, 1);
 	private float pitch;
 	private float yaw;
 	private float roll;
@@ -21,8 +21,14 @@ public class Camera {
 	}
 
 	public void move() {
-		rotX += -Mouse.getDY() * .07f;
+		System.out.println("Camera angle: X: " + rotX + " Y: " + rotY);
+		
+		if(rotX < 90)
+			rotX += -Mouse.getDY() * .07f;
+		else
+			rotX -= 3;
 		rotY += Mouse.getDX() * .07f;
+		
 		
 		float dx = (float) -(moveAt * Math.sin(Math.toRadians(rotY)));
 		float dy = (float) (moveAt * Math.sin(Math.toRadians(rotX)));
@@ -44,6 +50,8 @@ public class Camera {
 			position.y += 0.02f;
 		}else if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 			position.y -= 0.02f;
+		}else if(Keyboard.isKeyDown(Keyboard.KEY_E)){
+			Mouse.setGrabbed(false);
 		}else {
 			moveAt = 0;
 		}
