@@ -2,6 +2,8 @@ package net.sytes.judgeglass.lwjgl.renderEngine;
 
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,6 +41,8 @@ public class Loader {
 		Texture texture = null;
 		try {
 			texture = TextureLoader.getTexture("PNG", new FileInputStream("assets/textures/" + filename + ".png"));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -4);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
