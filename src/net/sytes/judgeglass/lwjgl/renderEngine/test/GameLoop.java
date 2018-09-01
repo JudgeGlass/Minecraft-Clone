@@ -6,6 +6,7 @@ import org.lwjgl.util.vector.Vector3f;
 import net.sytes.judgeglass.lwjgl.renderEngine.DisplayManager;
 import net.sytes.judgeglass.lwjgl.renderEngine.Loader;
 import net.sytes.judgeglass.lwjgl.renderEngine.Renderer;
+import net.sytes.judgeglass.lwjgl.renderEngine.entities.Entity;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.RawModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.shaders.StaticShader;
@@ -18,8 +19,8 @@ public class GameLoop {
 		DisplayManager.createDisplay();
 		
 		Loader loader = new Loader();
-		Renderer renderer = new Renderer();
 		StaticShader shader = new StaticShader();
+		Renderer renderer = new Renderer(shader);
 		
 		float[] vertices = {
 				-0.5f, 0.5f, 0f,
@@ -44,11 +45,17 @@ public class GameLoop {
 		ModelTexture texture = new ModelTexture(loader.loadTexture("dirt"));
 		TextureModel textureModel = new TextureModel(model, texture);
 		
+		Entity entity = new Entity(textureModel, new Vector3f(0, 0, -1), 0, 0, 0, 1);
+		
 		while(!Display.isCloseRequested()) {
+			entity.increasePosition(0, 0, -0.1f);
+			
 			renderer.prepare();
 			shader.start();
 			
-			renderer.render(textureModel);
+			
+			
+			renderer.render(entity, shader);
 			
 			shader.stop();
 			DisplayManager.updateDisplay();
