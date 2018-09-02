@@ -2,7 +2,11 @@ package net.sytes.judgeglass.lwjgl.renderEngine.entities;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.GameStatus;
+
 
 public class Camera {
 	private Vector3f position = new Vector3f(0, 5, 1);
@@ -21,12 +25,17 @@ public class Camera {
 	}
 
 	public void move() {
-		System.out.println("Camera angle: X: " + rotX + " Y: " + rotY);
+		GameStatus.cameraAngle = new Vector2f(rotX, rotY);
+		GameStatus.cameraPos = position;
 		
 		if(rotX < 90)
 			rotX += -Mouse.getDY() * .07f;
 		else
 			rotX -= 3;
+		
+		if(rotX < -90)
+			rotX += 3;
+		
 		rotY += Mouse.getDX() * .07f;
 		
 		
@@ -43,18 +52,19 @@ public class Camera {
 		}else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
 			moveAt = moveSpeed;
 		}else if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			position.x -= 0.02f;
+			position.x -= 0.5f;
 		}else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			position.x += 0.02f;
+			position.x += 0.5f;
 		}else if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-			position.y += 0.02f;
+			position.y += .5f;
 		}else if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-			position.y -= 0.02f;
+			position.y -= 0.5f;
 		}else if(Keyboard.isKeyDown(Keyboard.KEY_E)){
 			Mouse.setGrabbed(false);
 		}else {
 			moveAt = 0;
 		}
+		
 	}
 	
 	

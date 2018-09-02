@@ -28,6 +28,7 @@ public class Word {
 	 */
 	protected void addCharacter(Character character){
 		characters.add(character);
+		
 		width += character.getxAdvance() * fontSize;
 	}
 	

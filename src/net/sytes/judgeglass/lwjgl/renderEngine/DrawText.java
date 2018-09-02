@@ -20,7 +20,7 @@ public class DrawText {
 	public static void drawString(String strText, float x, float y, float size, boolean center, Vector3f color) {
 		if(text != null)
 			TextMaster.removeText(text);
-		text = new GUIText(strText, size, font, new Vector2f(x, y), 1, center);
+		text = new GUIText(strText, size, font, new Vector2f(x, y), 1f, center);
 		text.setColour(color.x, color.y, color.z);
 	}
 }
