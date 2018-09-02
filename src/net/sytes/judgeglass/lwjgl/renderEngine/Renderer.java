@@ -5,6 +5,9 @@ import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
+import java.util.List;
+import java.util.Map;
+
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
@@ -19,47 +22,67 @@ public class Renderer {
 
 	public static final float FOV = 70;
 	public static final float NEAR = 0.1f;
-	public static final float FAR = 1000;
+	public static final float FAR = 100;
 
 	private Matrix4f projectionMatrix;
 
+	private StaticShader shader;
+
 	public Renderer(StaticShader shader) {
+		this.shader = shader;
+		glEnable(GL_DEPTH_TEST);
 		createProjectionMatrix();
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.stop();
 	}
 
-	public void prepare() {
-		glEnable(GL_DEPTH_TEST);
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.4f, 0.7f, 1.0f, 1);
+	public void render(Map<TextureModel, List<Entity>> entities) {
+		for (TextureModel model : entities.keySet()) {
+			if (model != null) {
+				prepareTextureModel(model);
+				List<Entity> batch = entities.get(model);
+				for (Entity entity : batch) {
+					prepareInstance(entity);
+					glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+				}
+			}
+			unbindTextureModel();
+		}
 	}
 
-	public void render(Entity entity, StaticShader shader) {
-		if(Display.wasResized()) {
-			//glViewPort(0, 0, Display.getWidth(), Display.getHeight());
-		}
-		
-		TextureModel textModel = entity.getModel();
-		RawModel model = textModel.getRawModel();
+	private void prepareTextureModel(TextureModel model) {
+		RawModel rawModel = model.getRawModel();
 
-		glBindVertexArray(model.getVaoID());
+		glBindVertexArray(rawModel.getVaoID());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, model.getTexture().getID());
+
+	}
+
+	private void unbindTextureModel() {
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glBindVertexArray(0);
+	}
+
+	private void prepareInstance(Entity entity) {
 		Matrix4f transformMatrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getRotX(),
 				entity.getRotY(), entity.getRotZ(), entity.getScale());
 
 		shader.loadTransformationMatrix(transformMatrix);
+	}
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textModel.getTexture().getID());
-		glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glBindVertexArray(0);
+	public void prepare() {
+		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+		glEnable(GL_DEPTH_TEST);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(0.4f, 0.7f, 1.0f, 1);
 	}
 
 	private void createProjectionMatrix() {
@@ -76,4 +99,5 @@ public class Renderer {
 		projectionMatrix.m32 = -((2 * NEAR * FAR) / frustum_length);
 		projectionMatrix.m33 = 0;
 	}
+
 }

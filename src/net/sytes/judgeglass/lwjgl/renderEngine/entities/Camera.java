@@ -9,7 +9,7 @@ import net.sytes.judgeglass.lwjgl.renderEngine.tools.GameStatus;
 
 
 public class Camera {
-	private Vector3f position = new Vector3f(0, 5, 1);
+	private Vector3f position = new Vector3f(0, 0, 3);
 	private float pitch;
 	private float yaw;
 	private float roll;

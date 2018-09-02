@@ -1,5 +1,7 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.world;
 
+import java.util.HashMap;
+
 import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
 
 public abstract class Block {
@@ -8,11 +10,11 @@ public abstract class Block {
 	
 	protected TextureModel texture;
 	
+	
 	public Block(String name, int id) {
 		this.name = name;
 		this.id = id;
 	}
 	
-	protected abstract int getID();
-	protected abstract String getName();
+	public abstract String getName();
 }

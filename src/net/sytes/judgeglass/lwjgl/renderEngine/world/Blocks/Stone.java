@@ -8,15 +8,22 @@ import net.sytes.judgeglass.lwjgl.renderEngine.world.Block;
 import textures.ModelTexture;
 
 public class Stone extends Block{
+	private static final String NAME = "stone";
+	private static final int ID = 2;
+	
 	public Stone(String name, int id) {
-		super(name, id);
+		super(NAME, ID);
+	}
+	
+	public static int getID() {
+		return ID;
 	}
 
 	public static TextureModel getTextureModel() {
 		Loader loader = new Loader();
 		RawModel m = loader.loadToVAO(Cube.vertices, uv, Cube.indices);
 		ModelTexture mt = new ModelTexture(loader.loadTexture("textureAtlas"));
-		TextureModel tx = new TextureModel(m, mt);
+		TextureModel tx = new TextureModel(m, mt, ID);
 		
 		return tx;
 	}
@@ -52,14 +59,9 @@ public class Stone extends Block{
 			11.99f/64, 2.83f/64,
 			11.99f/64, 0,
 	};
-
+	
 	@Override
-	protected int getID() {
-		return super.id;
-	}
-
-	@Override
-	protected String getName() {
+	public String getName() {
 		return super.name;
 	}
 }

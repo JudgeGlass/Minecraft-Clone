@@ -8,16 +8,23 @@ import net.sytes.judgeglass.lwjgl.renderEngine.world.Block;
 import textures.ModelTexture;
 
 public class Dirt extends Block{
-
+	
+	private static final String NAME = "dirt";
+	private static final int ID = 1;
+	
 	public Dirt(String name, int id) {
-		super(name, id);
+		super(NAME, ID);
+	}
+	
+	public static int getID() {
+		return ID;
 	}
 	
 	public static TextureModel getTextureModel() {
 		Loader loader = new Loader();
 		RawModel m = loader.loadToVAO(Cube.vertices, uv, Cube.indices);
 		ModelTexture mt = new ModelTexture(loader.loadTexture("textureAtlas"));
-		TextureModel tx = new TextureModel(m, mt);
+		TextureModel tx = new TextureModel(m, mt, ID);
 		
 		return tx;
 	}
@@ -55,12 +62,7 @@ public class Dirt extends Block{
 	};
 
 	@Override
-	protected int getID() {
-		return super.id;
-	}
-
-	@Override
-	protected String getName() {
+	public String getName() {
 		return super.name;
 	}
 }

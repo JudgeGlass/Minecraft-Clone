@@ -40,14 +40,15 @@ public class GameStatus {
 		String cameraAngleStr = String.format("Camera X/Y: (%.2f, %.2f)", cameraAngle.x, cameraAngle.y);
 		String cameraPosStr = String.format("x: %.02f y: %.2f z: %.2f", cameraPos.x, cameraPos.y, cameraPos.z);
 		
+		if(fpsText != null) {
+			TextMaster.removeText(fpsText);
+		}
 		
 		if(versionText != null) {
 			TextMaster.removeText(versionText);
 		}
 		
-		if(fpsText != null) {
-			TextMaster.removeText(fpsText);
-		}
+		
 		
 		if(cameraAngleText != null) {
 			TextMaster.removeText(cameraAngleText);
@@ -68,5 +69,11 @@ public class GameStatus {
 			cameraPosText = new GUIText(cameraPosStr, 1.5f, font, new Vector2f(0, -.23f), 1f, false);
 			cameraPosText.setColour(1, 1, 1);
 		}
+	}
+	
+	public static void disableFPS() {
+		TextMaster.removeText(fpsText);
+		TextMaster.removeText(cameraAngleText);
+		TextMaster.removeText(cameraPosText);
 	}
 }
