@@ -1,18 +1,13 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.world;
 
-import static org.lwjgl.opengl.GL11.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import net.sytes.judgeglass.lwjgl.renderEngine.entities.Entity;
-import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.world.Blocks.Air;
 import net.sytes.judgeglass.lwjgl.renderEngine.world.Blocks.Dirt;
 import net.sytes.judgeglass.lwjgl.renderEngine.world.Blocks.Grass;
+import net.sytes.judgeglass.lwjgl.renderEngine.world.Blocks.GrassTile;
 import net.sytes.judgeglass.lwjgl.renderEngine.world.Blocks.Stone;
 
 public class Chunk {
@@ -22,49 +17,56 @@ public class Chunk {
 	private int height;
 	private int depth;
 
-	private ArrayList<Entity> chunk;
-	private HashMap<String, TextureModel> textureModel;
 	private Random random;
 	private byte[][][] blocks;
 
-	public Chunk(HashMap<String, TextureModel> textureModels, Vector3f start, int width, int height, int depth) {
+	public Chunk(Vector3f start, int width, int height, int depth) {
 		this.start = start;
 		this.width = width;
 		this.height = height;
 		this.depth = depth;
 
-		this.textureModel = textureModels;
-
-		chunk = new ArrayList<>();
 		random = new Random();
 		blocks = new byte[(int) (start.x + width + 1)][(int) (start.y + height + 1)][(int) (start.z + depth + 1)];
 		makeChunk();
 	}
 
 	private void makeChunk() {
-		for (int x = (int) start.x; x <= width + start.x; x++) {
-			for (int y = (int) start.y; y <= height + start.y; y++) {
+		for (int x = (int) start.x; x < width + start.x; x++) {
+			for (int y = (int) start.y; y < height + start.y; y++) {
 				for (int z = (int) start.z; z <= depth + start.z; z++) {
-					if(random.nextInt(10) == Air.getID()) { blocks[x][y][z] = (byte) Air.getID(); continue;}
-					if(y < 14)
+					// if(random.nextInt(10) == Air.getID()) { blocks[x][y][z] = (byte) Air.getID();
+					// continue;}
+					if (y < 13) {
 						blocks[x][y][z] = (byte) Stone.getID();
-					else if(y >= 14 && y < 15)
+					} else if (y == 13) {
 						blocks[x][y][z] = (byte) Dirt.getID();
-					else
+					} else if(y == 14){
 						blocks[x][y][z] = (byte) Grass.getID();
-
+					}else if(y == 16){
+						blocks[x][y][z] = (byte) GrassTile.getID();
+					}
 				}
 			}
 
 		}
 	}
-	
+
 	public void rerender() {
 		makeChunk();
 	}
-	
+
 	public byte[][][] getChunk() {
 		return blocks;
+	}
+
+	public Vector3f getStart() {
+		return start;
+	}
+	
+	public void removeBlock(int x, int y, int z) {
+		blocks[x][y][z] = (byte) Air.getID();
+		System.out.println("Block at X:" + x + " Y:" + y + " Z:" + z + " was removed!");
 	}
 
 	public boolean checkTileInView(int x, int y, int z) {

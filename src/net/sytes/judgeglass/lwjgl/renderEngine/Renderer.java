@@ -4,7 +4,6 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +29,6 @@ public class Renderer {
 
 	public Renderer(StaticShader shader) {
 		this.shader = shader;
-		glEnable(GL_DEPTH_TEST);
 		createProjectionMatrix();
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
@@ -74,6 +72,10 @@ public class Renderer {
 				entity.getRotY(), entity.getRotZ(), entity.getScale());
 
 		shader.loadTransformationMatrix(transformMatrix);
+	}
+	
+	public Matrix4f getProjectedMatrix() {
+		return projectionMatrix;
 	}
 
 	public void prepare() {

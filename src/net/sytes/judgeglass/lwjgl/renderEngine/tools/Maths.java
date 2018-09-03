@@ -46,4 +46,6 @@ public class Maths {
 	public static float distanceFrom(Vector3f p1, Vector3f p2) {
 		return (float) Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2) + Math.pow(p2.z - p1.z, 2));
 	}
+	
+	
 }

@@ -4,17 +4,21 @@ import java.util.HashMap;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector3f;
+
 import net.sytes.judgeglass.lwjgl.renderEngine.DisplayManager;
 import net.sytes.judgeglass.lwjgl.renderEngine.Loader;
 import net.sytes.judgeglass.lwjgl.renderEngine.MasterRenderer;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Camera;
+import net.sytes.judgeglass.lwjgl.renderEngine.entities.Entity;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontRendering.TextMaster;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.GameStatus;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.MousePicker;
 import net.sytes.judgeglass.lwjgl.renderEngine.world.ChunkRenderer;
-import net.sytes.judgeglass.lwjgl.renderEngine.world.Blocks.Air;
 import net.sytes.judgeglass.lwjgl.renderEngine.world.Blocks.Dirt;
 import net.sytes.judgeglass.lwjgl.renderEngine.world.Blocks.Grass;
+import net.sytes.judgeglass.lwjgl.renderEngine.world.Blocks.GrassTile;
 import net.sytes.judgeglass.lwjgl.renderEngine.world.Blocks.Stone;
 
 public class GameLoop {
@@ -40,9 +44,11 @@ public class GameLoop {
 		blocks.put("grass", Grass.getTextureModel());
 		blocks.put("dirt", Dirt.getTextureModel());
 		blocks.put("stone", Stone.getTextureModel());
+		blocks.put("grass_tile", GrassTile.getTextureModel());
 		MasterRenderer renderer = new MasterRenderer();
-		ChunkRenderer chunkRenderer = new ChunkRenderer(renderer, blocks, 16, 16, 16);
+		ChunkRenderer chunkRenderer = new ChunkRenderer(renderer, blocks, 17, 16, 16);
 		
+		MousePicker picker = new MousePicker(camera, renderer.getProjectionMatrix());
 
 		getDelta();
 		lastFPS = getTime();
@@ -50,25 +56,24 @@ public class GameLoop {
 		while (!Display.isCloseRequested() && !DisplayManager.awtCloseRequested) {
 			
 			camera.move();
+			picker.update();
+			//System.out.println(picker.getCurrentRay());
+			
 			renderer.render(camera);
-			chunkRenderer.drawChunks();
+			chunkRenderer.drawChunks(camera);
 
 			GameStatus.showGameStatus();
 			TextMaster.render();
-			
-			
-			while(Keyboard.next()) {
-				if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-					break;
-				} else if (Keyboard.isKeyDown(Keyboard.KEY_F3)) {
-					if (GameStatus.show) {
-						GameStatus.disableFPS();
-						GameStatus.show = false;
-					} else {
-						GameStatus.show = true;
-					}
+			if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+				break;
+			} else if (Keyboard.isKeyDown(Keyboard.KEY_F3)) {
+				if (GameStatus.show) {
+					GameStatus.show = false;
+				} else {
+					GameStatus.show = true;
 				}
 			}
+			
 			DisplayManager.updateDisplay();
 			updateFPS();
 		}

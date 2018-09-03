@@ -46,6 +46,7 @@ public class FontRenderer {
 	}
 
 	private void renderText(GUIText text) {
+			
 		glBindVertexArray(text.getMesh());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

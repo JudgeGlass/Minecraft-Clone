@@ -48,8 +48,6 @@ public class GameStatus {
 			TextMaster.removeText(versionText);
 		}
 		
-		
-		
 		if(cameraAngleText != null) {
 			TextMaster.removeText(cameraAngleText);
 		}

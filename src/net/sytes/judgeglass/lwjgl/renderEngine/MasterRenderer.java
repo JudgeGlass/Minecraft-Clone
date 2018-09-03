@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.lwjgl.util.vector.Matrix4f;
+
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Camera;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Entity;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
@@ -35,6 +37,10 @@ public class MasterRenderer {
 			newBatch.add(entity);
 			entities.put(entityModel, newBatch);
 		}
+	}
+	
+	public Matrix4f getProjectionMatrix() {
+		return renderer.getProjectedMatrix();
 	}
 	
 	public void clean() {
