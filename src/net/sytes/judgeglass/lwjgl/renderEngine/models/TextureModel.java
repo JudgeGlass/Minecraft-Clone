@@ -5,12 +5,10 @@ import textures.ModelTexture;
 public class TextureModel {
 	private RawModel rawModel;
 	private ModelTexture texture;
-	private int blockid;
 	
-	public TextureModel(RawModel model, ModelTexture texture, int blockid) {
+	public TextureModel(RawModel model, ModelTexture texture) {
 		this.rawModel = model;
 		this.texture = texture;
-		this.blockid = blockid;
 	}
 
 	public RawModel getRawModel() {

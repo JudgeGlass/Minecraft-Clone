@@ -38,7 +38,7 @@ public class FontRenderer {
 		shader.clean();
 	}
 
-	private void prepare() {
+	public void prepare() {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);
@@ -46,7 +46,6 @@ public class FontRenderer {
 	}
 
 	private void renderText(GUIText text) {
-			
 		glBindVertexArray(text.getMesh());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

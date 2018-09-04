@@ -37,6 +37,14 @@ public class Loader {
 		return new RawModel(vaoID, indices.length);
 	}
 	
+	public RawModel loadToVAOChunk(float[] vertices, float[] uv) {
+		int vaoID = createVAO();
+		storeDataInAttributeList(0, 3, vertices);
+		storeDataInAttributeList(1, 2, uv);
+		unbindVAO();
+		return new RawModel(vaoID, vertices.length);
+	}
+	
 	public int loadToVAO(float[] positions, float[] textureCoords) {
 		int vaoID = createVAO();
 		storeDataInAttributeList(0, 2, positions);
