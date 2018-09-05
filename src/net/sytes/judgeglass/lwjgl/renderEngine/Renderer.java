@@ -20,7 +20,7 @@ import net.sytes.judgeglass.lwjgl.renderEngine.tools.Maths;
 public class Renderer {
 
 	public static final float FOV = 70;
-	public static final float NEAR = 0.1f;
+	public static final float NEAR = 0.05f;
 	public static final float FAR = 1000.0f;
 
 	private Matrix4f projectionMatrix;
@@ -36,17 +36,18 @@ public class Renderer {
 	}
 
 	public void render(Map<TextureModel, List<Entity>> entities) {
-		
+
 		for (TextureModel model : entities.keySet()) {
-			if (model != null) {
-				prepareTextureModel(model);
-				List<Entity> batch = entities.get(model);
-				for (Entity entity : batch) {
-					prepareInstance(entity);
-					//glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-					glDrawArrays(GL_TRIANGLES, 0, model.getRawModel().getVertexCount());
-				}
+
+			prepareTextureModel(model);
+			List<Entity> batch = entities.get(model);
+			for (Entity entity : batch) {
+				prepareInstance(entity);
+				 //glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(),
+				 //GL11.GL_UNSIGNED_INT, 0);
+				glDrawArrays(GL_TRIANGLES, 0, model.getRawModel().getVertexCount());
 			}
+
 			unbindTextureModel();
 		}
 	}
@@ -75,18 +76,17 @@ public class Renderer {
 
 		shader.loadTransformationMatrix(transformMatrix);
 	}
-	
+
 	public Matrix4f getProjectedMatrix() {
 		return projectionMatrix;
 	}
 
 	public void prepare() {
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glEnable(GL_DEPTH_TEST);
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 		glClearColor(0.4f, 0.7f, 1.0f, 1);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	private void createProjectionMatrix() {

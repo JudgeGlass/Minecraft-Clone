@@ -28,14 +28,14 @@ public class Loader {
 	private List<Integer> vbos = new ArrayList<>();
 	private List<Integer> textures = new ArrayList<>();
 	
-	public RawModel loadToVAO(float[] positions, float[] textureCoords,int[] indices) {
+	/*public RawModel loadToVAO(float[] positions, float[] textureCoords,int[] indices) {
 		int vaoID = createVAO();
 		bindIndicesBuffer(indices);
 		storeDataInAttributeList(0, 3, positions);
 		storeDataInAttributeList(1, 2, textureCoords);
 		unbindVAO();
 		return new RawModel(vaoID, indices.length);
-	}
+	}*/
 	
 	public RawModel loadToVAOChunk(float[] vertices, float[] uv) {
 		int vaoID = createVAO();
@@ -57,8 +57,8 @@ public class Loader {
 		Texture texture = null;
 		try {
 			texture = TextureLoader.getTexture("PNG", new FileInputStream("assets/textures/" + filename + ".png"));
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -4);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -105,12 +105,12 @@ public class Loader {
 		glBindVertexArray(0);
 	}
 	
-	private void bindIndicesBuffer(int[] indices) {
+	/*private void bindIndicesBuffer(int[] indices) {
 		int vboID = glGenBuffers();
 		vbos.add(vboID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, createIntegerBuffer(indices), GL_STATIC_DRAW);
-	}
+	}*/
 	
 	private IntBuffer createIntegerBuffer(int[] data) {
 		IntBuffer buffer = BufferUtils.createIntBuffer(data.length);

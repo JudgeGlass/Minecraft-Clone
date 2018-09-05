@@ -5,10 +5,14 @@ import java.util.List;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import net.sytes.judgeglass.lwjgl.renderEngine.Loader;
 import net.sytes.judgeglass.lwjgl.renderEngine.Chunk.Chunk;
 import net.sytes.judgeglass.lwjgl.renderEngine.Chunk.ChunkMesh;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Block;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Entity;
+import net.sytes.judgeglass.lwjgl.renderEngine.models.RawModel;
+import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
+import textures.ModelTexture;
 
 public class ChunkRenderer {
 	private final int CHUNK_SIZE = 16;
@@ -20,8 +24,9 @@ public class ChunkRenderer {
 	private List<Chunk> rawChunks;
 	
 	private ChunkMesh mesh;
+	private Loader loader;
 	
-	public ChunkRenderer(Vector3f cameraPos) {
+	public ChunkRenderer(Vector3f cameraPos, Loader loader) {
 		this.cameraPos = cameraPos;
 		
 		rawChunks = new ArrayList<Chunk>();
@@ -30,7 +35,15 @@ public class ChunkRenderer {
 	}
 	
 	public List<Entity> getGeneratedChunks(){
-		return null;
+		for(Chunk chunk: rawChunks) {
+			ChunkMesh mesh = new ChunkMesh(chunk);
+			RawModel model123 = loader.loadToVAOChunk(mesh.positions, mesh.uvs);
+			ModelTexture texture = new ModelTexture(loader.loadTexture("stone"));
+			TextureModel texMod = new TextureModel(model123, texture);
+			
+			this.chunk.add(new Entity(texMod, mesh.chunk.origin, 0, 0, 0, 1));
+		}
+		return this.chunk;
 	}
 	
 	private void makeChunks() {

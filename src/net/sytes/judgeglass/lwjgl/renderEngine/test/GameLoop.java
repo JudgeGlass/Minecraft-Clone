@@ -21,6 +21,7 @@ import net.sytes.judgeglass.lwjgl.renderEngine.models.RawModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.GameStatus;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.PerlinNoiseGenerator;
+import net.sytes.judgeglass.lwjgl.renderEngine.world.ChunkRenderer;
 import textures.ModelTexture;
 
 public class GameLoop {
@@ -30,16 +31,18 @@ public class GameLoop {
 	static long lastFPS;
 
 	private static Loader loader;
-	private static List<Entity> entities = new ArrayList<Entity>();
-	private static Vector3f camPos;
-	private static PerlinNoiseGenerator perlinNoise = new PerlinNoiseGenerator();
+	private static List<Entity> entities = Collections.synchronizedList(new ArrayList<Entity>());
+	private static Vector3f camPos = new Vector3f(0, 0, 0);
+	private static List<Block> blocks;
+	private static List<ChunkMesh> chunks = new ArrayList<ChunkMesh>();
+	private static final int WORLD = 5 * 8;
 
 	public static void main(String[] args) {
 		DisplayManager.createDisplay();
 
 		loader = new Loader();
-		GameStatus.initFont(loader);
-		TextMaster.init(loader);
+		//GameStatus.initFont(loader);
+		//TextMaster.init(loader);
 
 		Camera camera = new Camera(0.3f);
 
@@ -48,49 +51,56 @@ public class GameLoop {
 		getDelta();
 		lastFPS = getTime();
 
-		
-		
-		List<Block> b = new ArrayList<Block>();
-		for(int x = 0; x < 128; x++) {
-			for(int z = 0; z < 128; z++) {
-				b.add(new Block(x, (int)perlinNoise.generateHeight(x, z), z, Block.Type.DIRT));
+		PerlinNoiseGenerator perlinNoise = new PerlinNoiseGenerator();
+		for(int x = (int)(1 - WORLD) / 8; x < (1 + WORLD) / 8; x++)
+			for(int z = (int)(1 - WORLD) / 8; z < (1 + WORLD) / 8; z++) {
+				List<Block> blocks = new ArrayList<Block>();
+				for(int i = 0; i < 8; i++) {
+					for(int j = 0; j < 8; j++) {
+						blocks.add(new Block(i, (int) perlinNoise.generateHeight(i + (x * 8), j + (z * 8)) - 15, j, Block.Type.GRASS));
+					}
+				}
+				
+				Chunk c = new Chunk(blocks, new Vector3f(x * 8, 0, z * 8));
+				ChunkMesh mesh = new ChunkMesh(c);
+				RawModel rModel = loader.loadToVAOChunk(mesh.positions, mesh.uvs);
+				ModelTexture mT = new ModelTexture(loader.loadTexture("atlas"));
+				TextureModel txt = new TextureModel(rModel, mT);
+				entities.add(new Entity(txt, mesh.chunk.origin, 0, 0, 0, 1));
 			}
-		}
-		
-		Chunk c = new Chunk(b, new Vector3f(0, 0, 0));
-		ChunkMesh mesh = new ChunkMesh(c);
-		RawModel model123 = loader.loadToVAOChunk(mesh.positions, mesh.uvs);
-		ModelTexture texture = new ModelTexture(loader.loadTexture("stone"));
-		TextureModel texMod = new TextureModel(model123, texture);
-		entities.add(new Entity(texMod, mesh.chunk.origin, 0.f, 0.f, 0.f, 1));
-		
+
 		int index = 0;
 		while (!Display.isCloseRequested() && !DisplayManager.awtCloseRequested) {
 			camera.move();
 			camPos = camera.getPosition();
 			
-			for(Entity e: entities) {
+			if(index < chunks.size()) {
+				RawModel rModel = loader.loadToVAOChunk(chunks.get(index).positions, chunks.get(index).uvs);
+				ModelTexture mT = new ModelTexture(loader.loadTexture("atlas"));
+				TextureModel txt = new TextureModel(rModel, mT);
+				//entities.add(new Entity(txt, chunks.get(index).chunk.origin, 0, 0, 0, 1));
+				index++;
+			}
+
+			renderer.render(camera);
+
+			for (Entity e : entities) {
 				renderer.processEntity(e);
 			}
-			
-			renderer.render(camera);
 
 			if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 				break;
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_F3)) {
-				if (GameStatus.show) {
-					GameStatus.show = false;
-				} else {
-					GameStatus.show = true;
-				}
-			}
 				
-			GameStatus.showGameStatus();
-			TextMaster.render();
+			}
+
+			//GameStatus.showGameStatus();
+			//TextMaster.render();
 			DisplayManager.updateDisplay();
 			updateFPS();
 		}
 
+		//TextMaster.cleanUp();
 		renderer.clean();
 		loader.clean();
 		DisplayManager.closeDisplay();
@@ -118,5 +128,32 @@ public class GameLoop {
 		}
 		fps++;
 	}
+
+	/*private static List<Block> getChunk(int xx, int zz) {
+		List<Block> b = new ArrayList<Block>();
+		for (int x = 0; x < 16; x++) {
+			for (int z = 0; z < 16; z++) {
+				Block newBlock = new Block(x, (int) perlinNoise.generateHeight(x, z) + 17, z, Block.Type.GRASS);
+				System.out.println("BLOCK: " + newBlock.getPosition());
+				b.add(newBlock);
+
+				int index = 1;
+				while (true) {
+					if (newBlock.y - index <= 0) {
+						break;
+					}
+
+					if (index <= 4) {
+						b.add(new Block(x, newBlock.y - index, z, Block.Type.DIRT));
+					} else {
+						b.add(new Block(x, newBlock.y - index, z, Block.Type.STONE));
+					}
+					index++;
+				}
+			}
+		}
+
+		return b;
+	}*/
 
 }
