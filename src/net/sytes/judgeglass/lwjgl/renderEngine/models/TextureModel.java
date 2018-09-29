@@ -1,6 +1,6 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.models;
 
-import textures.ModelTexture;
+import net.sytes.judgeglass.lwjgl.renderEngine.textures.ModelTexture;
 
 public class TextureModel {
 	private RawModel rawModel;

@@ -2,26 +2,30 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jogg-0.0.7.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/slick-util.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/AppleJavaExtensions.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/asm-debug-all.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/jinput.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/laf-plugin-7.2.1.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/laf-widget-7.2.1.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/log4j-api-2.0-beta9.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/lwjgl.jar">
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/AppleJavaExtensions.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/asm-debug-all.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/jinput.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/laf-plugin-7.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/laf-widget-7.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/log4j-api-2.0-beta9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/lwjgl.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="D:/BAC/Windows 7/LWJGL/native/windows"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/hdwil/Documents/lwjgl-2.9.3/native/windows"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/lwjgl_test.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/lwjgl_util.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/lwjgl_util_applet.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/lwjgl-debug.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/lzma.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/substance-7.2.1.jar"/>
-	<classpathentry kind="lib" path="D:/BAC/Windows 7/LWJGL/jar/trident-7.2.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/JudgeGlass/Downloads/joml-jdk8-1.9.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/lwjgl_test.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/lwjgl_util_applet.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/lwjgl-debug.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/lzma.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/substance-7.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/trident-7.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Downloads/slick-util.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Desktop/Code/easyogg.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Desktop/Code/jogg-0.0.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Desktop/Code/jorbis-0.0.15.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Desktop/Code/startup2.jar"/>
+	<classpathentry kind="lib" path="internal"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

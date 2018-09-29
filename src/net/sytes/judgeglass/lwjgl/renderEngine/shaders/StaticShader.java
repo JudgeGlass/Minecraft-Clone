@@ -7,8 +7,8 @@ import net.sytes.judgeglass.lwjgl.renderEngine.tools.Maths;
 
 public class StaticShader extends ShaderProgram{
 
-	private static final String VERTEX_FILE = "src/net/sytes/judgeglass/lwjgl/renderEngine/shaders/vertex.glsl";
-	private static final String FRAGMENT_FILE = "src/net/sytes/judgeglass/lwjgl/renderEngine/shaders/fragment.glsl";
+	private static final String VERTEX_FILE = "assets/graphics/vertex.glsl";
+	private static final String FRAGMENT_FILE = "assets/graphics/fragment.glsl";
 	
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;

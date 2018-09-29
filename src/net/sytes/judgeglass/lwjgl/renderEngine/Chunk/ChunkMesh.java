@@ -57,40 +57,42 @@ public class ChunkMesh {
 			boolean pz = false;
 			boolean nz = false;
 
-			for (int j = 0; j < chunk.blocks.size(); j++) {
-				Block blockJ = chunk.blocks.get(j);
-				blockHandler.setType(blockI.type);
-
-				// PX
-				if (((blockI.x + 1) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {
-					px = true;
+			if(blockI.hideFaces) {
+				for (int j = 0; j < chunk.blocks.size(); j++) {
+					Block blockJ = chunk.blocks.get(j);
+					blockHandler.setType(blockI.type);
+	
+					// PX
+					if (((blockI.x + 1) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {
+						px = true;
+					}
+	
+					// NX
+					if (((blockI.x - 1) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {
+						nx = true;
+					}
+	
+					// PY
+					if (((blockI.x) == (blockJ.x)) && ((blockI.y + 1) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {
+						py = true;
+					}
+	
+					// NY
+					if (((blockI.x) == (blockJ.x)) && ((blockI.y - 1) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {
+						ny = true;
+					}
+	
+					// PZ
+					if (((blockI.x) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z + 1) == (blockJ.z))) {
+						pz = true;
+					}
+	
+					// NZ
+					if (((blockI.x) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z - 1) == (blockJ.z))) {
+						nz = true;
+					}
+	
 				}
-
-				// NX
-				if (((blockI.x - 1) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {
-					nx = true;
-				}
-
-				// PY
-				if (((blockI.x) == (blockJ.x)) && ((blockI.y + 1) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {
-					py = true;
-				}
-
-				// NY
-				if (((blockI.x) == (blockJ.x)) && ((blockI.y - 1) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {
-					ny = true;
-				}
-
-				// PZ
-				if (((blockI.x) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z + 1) == (blockJ.z))) {
-					pz = true;
-				}
-
-				// NZ
-				if (((blockI.x) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z - 1) == (blockJ.z))) {
-					nz = true;
-				}
-
 			}
 
 			// Add visible faces to mesh
@@ -106,6 +108,14 @@ public class ChunkMesh {
 			}
 
 			if (!nx) {
+				for (int k = 0; k < 6; k++) {
+					vertices.add(
+							new Vertex(
+									new Vector3f(AbstractCube.NX_POS[k].x + blockI.x,
+											AbstractCube.NX_POS[k].y + blockI.y, AbstractCube.NX_POS[k].z + blockI.z), // Left or Right?
+									blockHandler.rightFace[k], AbstractCube.NORMALS[k]));
+				}
+			}else if(!blockI.hideFaces){
 				for (int k = 0; k < 6; k++) {
 					vertices.add(
 							new Vertex(

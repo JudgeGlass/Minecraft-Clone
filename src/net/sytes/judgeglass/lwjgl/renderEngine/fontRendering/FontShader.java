@@ -7,8 +7,8 @@ import net.sytes.judgeglass.lwjgl.renderEngine.shaders.ShaderProgram;
 
 public class FontShader extends ShaderProgram{
 
-	private static final String VERTEX_FILE = "src/net/sytes/judgeglass/lwjgl/renderEngine/fontRendering/fontVertex.txt";
-	private static final String FRAGMENT_FILE = "src/net/sytes/judgeglass/lwjgl/renderEngine/fontRendering/fontFragment.txt";
+	private static final String VERTEX_FILE = "assets/fonts/fontVertex.txt";
+	private static final String FRAGMENT_FILE = "assets/fonts/fontFragment.txt";
 	
 	private int location_color;
 	private int location_translation;

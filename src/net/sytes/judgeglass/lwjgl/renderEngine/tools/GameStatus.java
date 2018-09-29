@@ -24,6 +24,8 @@ public class GameStatus {
 	private static GUIText cameraPosText;
 	private static GUIText fpsText;
 	private static GUIText versionText;
+	private static String cameraAngleStr;
+	private static String cameraPosStr;
 	
 	public static void initFont(Loader loader) {
 		font = new FontType(loader.loadTexture("sans"), new File("assets/fonts/sans.fnt"));
@@ -37,8 +39,8 @@ public class GameStatus {
 	}
 	
 	public static void showGameStatus() {
-		String cameraAngleStr = String.format("Camera X/Y: (%.2f, %.2f)", cameraAngle.x, cameraAngle.y);
-		String cameraPosStr = String.format("x: %.02f y: %.2f z: %.2f", cameraPos.x, cameraPos.y, cameraPos.z);
+		cameraAngleStr = String.format("Camera X/Y: (%.2f, %.2f)", cameraAngle.x, cameraAngle.y);
+		cameraPosStr = String.format("x: %.02f y: %.2f z: %.2f", cameraPos.x, cameraPos.y, cameraPos.z);
 		
 		if(fpsText != null) {
 			TextMaster.removeText(fpsText);
@@ -56,7 +58,7 @@ public class GameStatus {
 			TextMaster.removeText(cameraPosText);
 		}
 		
-		versionText = new GUIText("Mincraft Clone v" + VERSION, 1.5f, font, new Vector2f(0, 0), 1f, false);
+		versionText = new GUIText("Minecraft Clone v" + VERSION, 1.5f, font, new Vector2f(0, 0), 1f, false);
 		versionText.setColour(1, 1, 1);
 		
 		if(show) {
@@ -67,6 +69,11 @@ public class GameStatus {
 			cameraPosText = new GUIText(cameraPosStr, 1.5f, font, new Vector2f(0, -.23f), 1f, false);
 			cameraPosText.setColour(1, 1, 1);
 		}
+	}
+	
+	public static void drawVersion() {
+		versionText = new GUIText("Minecraft Clone v" + VERSION, 1.5f, font, new Vector2f(0, 0), 1f, false);
+		versionText.setColour(1, 1, 1);
 	}
 	
 	public static void disableFPS() {
