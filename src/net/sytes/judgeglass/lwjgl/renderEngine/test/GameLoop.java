@@ -129,14 +129,14 @@ public class GameLoop {
 			} else {
 				loadBackground.clear();
 			}
-			close = true;
 			guiRenderer.render(guis);
 			TextMaster.render();
 			DisplayManager.updateDisplay();
 			updateFPS();
 			tick++;
 		}
-
+		
+		close = true;
 		guiRenderer.clean();
 		TextMaster.cleanUp();
 		MusicManager.stop();
@@ -173,7 +173,7 @@ public class GameLoop {
 		new Thread(() -> {
 			Random rand = new Random();
 			PerlinNoiseGenerator perlinNoise = new PerlinNoiseGenerator(0, 0, 0, rand.nextInt());
-			while (close) {
+			while (!close) {
 				List<Block> blocks = null;
 				for (int x = (int) (camPos.x - WORLD) / 16; x < (camPos.x + WORLD) / 16; x++)
 					for (int y = (int) (camPos.y - 16) / 16; y < (camPos.y + 16) / 16; y++) {

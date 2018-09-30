@@ -3,7 +3,6 @@ package net.sytes.judgeglass.lwjgl.renderEngine;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
