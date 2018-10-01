@@ -40,6 +40,7 @@ public class MusicManager {
 	}
 	
 	public static void stop() {
-		oggEffect.stop();
+		if(oggEffect != null)
+			oggEffect.stop();
 	}
 }

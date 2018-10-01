@@ -54,7 +54,7 @@ public class ChunkMesh {
 			boolean px = false;
 			boolean nx = false;
 			boolean py = false;
-			boolean ny = false;
+			boolean ny = true;
 			boolean pz = false;
 			boolean nz = false;
 

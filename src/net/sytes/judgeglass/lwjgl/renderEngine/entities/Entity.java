@@ -2,6 +2,7 @@ package net.sytes.judgeglass.lwjgl.renderEngine.entities;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import net.sytes.judgeglass.lwjgl.renderEngine.Chunk.ChunkMesh;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
 
 public class Entity {
@@ -13,6 +14,7 @@ public class Entity {
 	private float rotY;
 	private float rotZ;
 	private float scale;
+	private ChunkMesh mesh = null;
 	
 	public Entity(TextureModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
 		this.model = model;
@@ -21,6 +23,16 @@ public class Entity {
 		this.rotY = rotY;
 		this.rotZ = rotZ;
 		this.scale = scale;
+	}
+	
+	public Entity(TextureModel model, Vector3f position, ChunkMesh mesh) {
+		this.model = model;
+		this.position = position;
+		this.mesh = mesh;
+		this.scale = 1;
+		this.rotX = 0;
+		this.rotY = 0;
+		this.rotZ = 0;
 	}
 	
 	public void increasePosition(float dx, float dy, float dz) {
@@ -37,6 +49,10 @@ public class Entity {
 
 	public TextureModel getModel() {
 		return model;
+	}
+	
+	public ChunkMesh getMesh() {
+		return mesh;
 	}
 
 	public void setModel(TextureModel model) {

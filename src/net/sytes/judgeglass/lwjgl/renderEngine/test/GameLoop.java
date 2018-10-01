@@ -8,9 +8,11 @@ import java.util.Random;
 
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import static org.lwjgl.opengl.GL11.*;
 
 import net.sytes.judgeglass.lwjgl.renderEngine.DisplayManager;
 import net.sytes.judgeglass.lwjgl.renderEngine.Loader;
@@ -44,16 +46,25 @@ public class GameLoop {
 	private static List<ChunkMesh> chunks = Collections.synchronizedList(new ArrayList<ChunkMesh>());
 	private static List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<Vector3f>());
 	private static Vector3f camPos = new Vector3f(0, 0, 0);
-	private static final int WORLD = 8 * 16;
+	private static final int WORLD = 7 * 16;
+	private static final int viewDistance = 2;
+	
 	private static boolean rendered = false;
 	private static boolean close = false;
 	public static boolean playing = false;
+	public static boolean inventoryOpen = false;
+	public static boolean menuOpen = false;
+	public static boolean polyMode = false;
+
+	/* Test */
+	private static List<Entity> removeEntity = Collections.synchronizedList(new ArrayList<Entity>());
+	private static List<ChunkMesh> removeMesh = Collections.synchronizedList(new ArrayList<ChunkMesh>());
 
 	public static void main(String[] args) {
 		DisplayManager.createDisplay();
-		//start();
+		// start();
 	}
-	
+
 	public static void start() {
 		playing = true;
 		new Thread(() -> {
@@ -75,9 +86,14 @@ public class GameLoop {
 
 		GuiRenderer guiRenderer = new GuiRenderer(loader);
 		GuiTexture gui3 = new GuiTexture(loader.loadTexture("ch"), new Vector2f(0.0f, 0.0f),
-				new Vector2f(0.025f, 0.04f));
+				new Vector2f(0.02f, 0.03f));
+		GuiTexture hotBar = new GuiTexture(loader.loadTexture("hotbar"), new Vector2f(0.05f, -.89f),
+				new Vector2f(.5f, .095f));
+		GuiTexture inventory = new GuiTexture(loader.loadTexture("inventory"), new Vector2f(0, 0),
+				new Vector2f(.5f, .7f));
 
 		guis.add(gui3);
+		guis.add(hotBar);
 
 		List<GuiTexture> loadBackground = new ArrayList<GuiTexture>();
 		for (float i = 0; i < 2; i += 0.14) {
@@ -88,49 +104,89 @@ public class GameLoop {
 		}
 
 		GameStatus.drawVersion();
-		
+
 		ModelTexture mT = new ModelTexture(loader.loadTexture("atlas"));
 		FontType loadFont = new FontType(loader.loadTexture("sans"), new File("assets/fonts/sans.fnt"));
 
 		int tick = 0;
-		int index = 0;		
+		int index = 0;
 		while (!Display.isCloseRequested() && !DisplayManager.awtCloseRequested) {
-			
+
 			camera.move();
 			camPos = camera.getPosition();
 
-			renderer.render(camera);
-
+			renderer.render(camera);	
+			
 			if (index < chunks.size() && tick > 20) {
 				RawModel rModel = loader.loadToVAOChunk(chunks.get(index).positions, chunks.get(index).uvs);
 				TextureModel txt = new TextureModel(rModel, mT);
-				Entity e = new Entity(txt, chunks.get(index).chunk.origin, 0, 0, 0, 1);
+				Entity e = new Entity(txt, chunks.get(index).chunk.origin, chunks.get(index));
 				if (!entities.contains(e))
 					entities.add(e);
-				
+
 				chunks.get(index).positions = null;
 				chunks.get(index).normals = null;
 				chunks.get(index).uvs = null;
-				
+
 				index++;
 			}
 
 			for (Entity e : entities) {
 				Vector3f origin = e.getPosition();
-				
-				int distX = (int)(camPos.x - origin.x);
-				int distZ = (int)(camPos.z - origin.z);
-				
-				if(distX < 0) {
+
+				int distX = (int) (camPos.x - origin.x);
+				int distZ = (int) (camPos.z - origin.z);
+
+				if (distX < 0) {
 					distX = -distX;
 				}
-				
-				if(distZ < 0) {
+
+				if (distZ < 0) {
 					distZ = -distZ;
 				}
-				
-				if((distX <= WORLD) && (distZ <= WORLD)) {
+
+				if ((distX <= WORLD * viewDistance) && (distZ <= WORLD * viewDistance)) {
 					renderer.processEntity(e);
+				} else {
+					// removeEntity.add(e);
+					// removeMesh.add(e.getMesh());
+				}
+			}
+
+			while (Keyboard.next()) {
+				if (Keyboard.isKeyDown(Keyboard.KEY_F)) {
+					chunks.remove(entities.get(10).getMesh());
+					entities.remove(entities.get(10));
+				}else if(Keyboard.isKeyDown(Keyboard.KEY_E)){
+					if(inventoryOpen) {
+						Mouse.setGrabbed(true);
+						inventoryOpen = false;
+					}else {
+						Mouse.setGrabbed(false);
+						inventoryOpen = true;
+					}
+				}else if(Keyboard.isKeyDown(Keyboard.KEY_P)) {
+					if(polyMode) {
+						glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+						polyMode = false;
+					}else {
+						glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+						polyMode = true;
+					}
+				}
+			}
+
+			if (inventoryOpen) {
+				if (!guis.contains(inventory)) {
+					guis.remove(gui3);
+					guis.remove(hotBar);
+					guis.add(inventory);
+				}
+			} else {
+				if (guis.contains(inventory)) {
+					guis.add(gui3);
+					guis.add(hotBar);
+					guis.remove(inventory);
 				}
 			}
 
@@ -141,7 +197,7 @@ public class GameLoop {
 			}
 
 			if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-				break;
+					break;
 			}
 
 			if (!rendered || chunks.size() < 64) {
@@ -154,19 +210,19 @@ public class GameLoop {
 			} else {
 				loadBackground.clear();
 			}
-			
+
 			guiRenderer.render(guis);
 			TextMaster.render();
 			DisplayManager.updateDisplay();
 			updateFPS();
-			
-			if(tick > 500) {
+
+			if (tick > 500) {
 				tick = 0;
-			}else {
+			} else {
 				tick++;
 			}
 		}
-		
+
 		close = true;
 		guiRenderer.clean();
 		TextMaster.cleanUp();
@@ -192,7 +248,6 @@ public class GameLoop {
 	public static void updateFPS() {
 		if (getTime() - lastFPS > 1000) {
 			GameStatus.FPS = fps;
-			
 			System.out.println("FPS: " + fps + "   Pos: " + camPos);
 			fps = 0;
 			lastFPS += 1000;
@@ -214,27 +269,28 @@ public class GameLoop {
 								blocks = new ArrayList<Block>();
 								for (int i = 0; i < 16; i++) {
 									for (int j = 0; j < 16; j++) {
-											
+
 										int noise = (int) perlinNoise.generateHeight(i + (x * 16), j + (z * 16)) + 35;
-										//int noise = 25;
+										// int noise = 25;
 
 										Block b;
-										boolean noTree = false;;
+										boolean noTree = false;
+										;
 										if (noise <= 21) {
 											b = new Block(i, noise, j, Block.Type.SAND, true);
-											
-											if(b.y <= 21) {
+
+											if (b.y <= 21) {
 												int ii = 1;
-												while(b.y + ii < 22) {
-													blocks.add(new Block(b.x, b.y+ii, b.z, Block.Type.WATER, true));
+												while (b.y + ii < 22) {
+													blocks.add(new Block(b.x, b.y + ii, b.z, Block.Type.WATER, true));
 													ii++;
 												}
 											}
 											noTree = true;
-										}
-										else {
-											if(rand.nextInt(50) == 10)
+										} else {
+											if (rand.nextInt(50) == 10) {
 												b = new Block(i, noise, j, Block.Type.DIRT, true);
+											}
 											else
 												b = new Block(i, noise, j, Block.Type.GRASS, true);
 										}
@@ -243,31 +299,23 @@ public class GameLoop {
 										if (rand.nextInt(200) == 10 && !noTree) {
 											blocks = TreeGenerator.makeTree(new Vector3f(b.x, b.y, b.z), blocks);
 										}
+										
+										blocks.add(new Block(i, b.y-1, j, Block.Type.STONE, true));
 
-										int index = 1;
-										/*while (true) {
-											if (b.y - index <= 24) {
-												break;
-											}
-
-											if (index <= 3) {
-												blocks.add(new Block(b.x, b.y - index, b.z, Block.Type.DIRT, true));
-												index++;
-												continue;
-											}
-
-											if (b.y - index <= 20) {
-												if (rand.nextInt(200) == 10) {
-													blocks.add(new Block(b.x, b.y - index, b.z, Block.Type.GOLD_BLOCK,
-															true));
-													index++;
-													continue;
-												}
-											}
-
-											blocks.add(new Block(b.x, b.y - index, b.z, Block.Type.STONE, true));
-											index++;
-										}*/
+										/*int index = 1;
+										
+										 while (true) { if (b.y - index <= 24) { break; }
+										 
+										 if (index <= 3) { blocks.add(new Block(b.x, b.y - index, b.z,
+										  Block.Type.DIRT, true)); index++; continue; }
+										  
+										  if (b.y - index <= 20) { if (rand.nextInt(200) == 10) { blocks.add(new
+										  Block(b.x, b.y - index, b.z, Block.Type.GOLD_BLOCK, true)); index++;
+										  continue; } }
+										  
+										  blocks.add(new Block(b.x, b.y - index, b.z, Block.Type.STONE, true));
+										  index++; }*/
+										 
 									}
 								}
 

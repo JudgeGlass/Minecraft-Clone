@@ -52,9 +52,7 @@ public class Renderer {
 	}
 
 	private void prepareTextureModel(TextureModel model) {
-		RawModel rawModel = model.getRawModel();
-
-		glBindVertexArray(rawModel.getVaoID());
+		glBindVertexArray(model.getRawModel().getVaoID());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 
@@ -81,7 +79,7 @@ public class Renderer {
 	}
 
 	public void prepare() {
-		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glEnable(GL_DEPTH_TEST);
 		
 		glClearColor(0.4f, 0.7f, 1.0f, 1);
