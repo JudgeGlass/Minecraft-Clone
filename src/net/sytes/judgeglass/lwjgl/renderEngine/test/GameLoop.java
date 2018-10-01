@@ -44,7 +44,7 @@ public class GameLoop {
 	private static List<ChunkMesh> chunks = Collections.synchronizedList(new ArrayList<ChunkMesh>());
 	private static List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<Vector3f>());
 	private static Vector3f camPos = new Vector3f(0, 0, 0);
-	private static final int WORLD = 4 * 16;
+	private static final int WORLD = 8 * 16;
 	private static boolean rendered = false;
 	private static boolean close = false;
 	public static boolean playing = false;
@@ -108,11 +108,30 @@ public class GameLoop {
 				if (!entities.contains(e))
 					entities.add(e);
 				
+				chunks.get(index).positions = null;
+				chunks.get(index).normals = null;
+				chunks.get(index).uvs = null;
+				
 				index++;
 			}
 
 			for (Entity e : entities) {
-				renderer.processEntity(e);
+				Vector3f origin = e.getPosition();
+				
+				int distX = (int)(camPos.x - origin.x);
+				int distZ = (int)(camPos.z - origin.z);
+				
+				if(distX < 0) {
+					distX = -distX;
+				}
+				
+				if(distZ < 0) {
+					distZ = -distZ;
+				}
+				
+				if((distX <= WORLD) && (distZ <= WORLD)) {
+					renderer.processEntity(e);
+				}
 			}
 
 			if (!rendered && tick >= 20) {
