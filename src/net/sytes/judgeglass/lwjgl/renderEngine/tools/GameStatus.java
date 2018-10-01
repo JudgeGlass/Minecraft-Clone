@@ -24,6 +24,7 @@ public class GameStatus {
 	private static GUIText cameraPosText;
 	private static GUIText fpsText;
 	private static GUIText versionText;
+	private static GUIText authorText;
 	private static String cameraAngleStr;
 	private static String cameraPosStr;
 	
@@ -58,8 +59,8 @@ public class GameStatus {
 			TextMaster.removeText(cameraPosText);
 		}
 		
-		versionText = new GUIText("Minecraft Clone v" + VERSION, 1.5f, font, new Vector2f(0, 0), 1f, false);
-		versionText.setColour(1, 1, 1);
+		//versionText = new GUIText("Minecraft Clone v" + VERSION, 1.5f, font, new Vector2f(0, 0), 1f, false);
+		//versionText.setColour(1, 1, 1);
 		
 		if(show) {
 			fpsText = new GUIText("FPS: " + FPS, 1.5f, font, new Vector2f(0, -.08f), 1f, false);
@@ -71,9 +72,15 @@ public class GameStatus {
 		}
 	}
 	
+	public static void updateStatus() {
+		
+	}
+	
 	public static void drawVersion() {
 		versionText = new GUIText("Minecraft Clone v" + VERSION, 1.5f, font, new Vector2f(0, 0), 1f, false);
 		versionText.setColour(1, 1, 1);
+		authorText = new GUIText("Copyright 2018 Hunter Wilcox", 1.0f, font, new Vector2f(0, -.08f), 1f, false);
+		authorText.setColour(1, 1, 1);
 	}
 	
 	public static void disableFPS() {

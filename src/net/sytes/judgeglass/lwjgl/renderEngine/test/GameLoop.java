@@ -47,9 +47,15 @@ public class GameLoop {
 	private static final int WORLD = 4 * 16;
 	private static boolean rendered = false;
 	private static boolean close = false;
+	public static boolean playing = false;
 
 	public static void main(String[] args) {
 		DisplayManager.createDisplay();
+		//start();
+	}
+	
+	public static void start() {
+		playing = true;
 		new Thread(() -> {
 			MusicManager.play();
 		}).start();
@@ -82,24 +88,26 @@ public class GameLoop {
 		}
 
 		GameStatus.drawVersion();
+		
 		ModelTexture mT = new ModelTexture(loader.loadTexture("atlas"));
 		FontType loadFont = new FontType(loader.loadTexture("sans"), new File("assets/fonts/sans.fnt"));
 
 		int tick = 0;
-		int index = 0;
+		int index = 0;		
 		while (!Display.isCloseRequested() && !DisplayManager.awtCloseRequested) {
+			
 			camera.move();
 			camPos = camera.getPosition();
 
 			renderer.render(camera);
 
 			if (index < chunks.size() && tick > 20) {
-
 				RawModel rModel = loader.loadToVAOChunk(chunks.get(index).positions, chunks.get(index).uvs);
 				TextureModel txt = new TextureModel(rModel, mT);
 				Entity e = new Entity(txt, chunks.get(index).chunk.origin, 0, 0, 0, 1);
 				if (!entities.contains(e))
 					entities.add(e);
+				
 				index++;
 			}
 
@@ -115,11 +123,9 @@ public class GameLoop {
 
 			if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 				break;
-			} else if (Keyboard.isKeyDown(Keyboard.KEY_F3)) {
-
 			}
 
-			if (!rendered || chunks.size() < 10) {
+			if (!rendered || chunks.size() < 64) {
 				GUIText text = new GUIText("Building Terrain", 1.25f, loadFont, new Vector2f(.865f, -1f), 1f, false);
 				text.setColour(1, 1, 1);
 
@@ -129,11 +135,17 @@ public class GameLoop {
 			} else {
 				loadBackground.clear();
 			}
+			
 			guiRenderer.render(guis);
 			TextMaster.render();
 			DisplayManager.updateDisplay();
 			updateFPS();
-			tick++;
+			
+			if(tick > 500) {
+				tick = 0;
+			}else {
+				tick++;
+			}
 		}
 		
 		close = true;
@@ -161,6 +173,7 @@ public class GameLoop {
 	public static void updateFPS() {
 		if (getTime() - lastFPS > 1000) {
 			GameStatus.FPS = fps;
+			
 			System.out.println("FPS: " + fps + "   Pos: " + camPos);
 			fps = 0;
 			lastFPS += 1000;
@@ -169,7 +182,6 @@ public class GameLoop {
 	}
 
 	private static void makeChunks() {
-
 		new Thread(() -> {
 			Random rand = new Random();
 			PerlinNoiseGenerator perlinNoise = new PerlinNoiseGenerator(0, 0, 0, rand.nextInt());
@@ -179,31 +191,42 @@ public class GameLoop {
 					for (int y = (int) (camPos.y - 16) / 16; y < (camPos.y + 16) / 16; y++) {
 						for (int z = (int) (camPos.z - WORLD) / 16; z < (camPos.z + WORLD) / 16; z++) {
 							int ny = 0;
-							/*if(camPos.y >= 24) {
-								ny = 0;
-							}else {
-								ny = y;
-							}*/
 							if (!usedPos.contains(new Vector3f(x * 16, ny * 16, z * 16))) {
 								blocks = new ArrayList<Block>();
 								for (int i = 0; i < 16; i++) {
 									for (int j = 0; j < 16; j++) {
 											
-										int noise = (int) perlinNoise.generateHeight(i + (x * 16), j + (z * 16)) + 40;
+										int noise = (int) perlinNoise.generateHeight(i + (x * 16), j + (z * 16)) + 35;
+										//int noise = 25;
 
 										Block b;
-										if (noise <= 20)
+										boolean noTree = false;;
+										if (noise <= 21) {
 											b = new Block(i, noise, j, Block.Type.SAND, true);
-										else
-											b = new Block(i, noise, j, Block.Type.GRASS, true);
+											
+											if(b.y <= 21) {
+												int ii = 1;
+												while(b.y + ii < 22) {
+													blocks.add(new Block(b.x, b.y+ii, b.z, Block.Type.WATER, true));
+													ii++;
+												}
+											}
+											noTree = true;
+										}
+										else {
+											if(rand.nextInt(50) == 10)
+												b = new Block(i, noise, j, Block.Type.DIRT, true);
+											else
+												b = new Block(i, noise, j, Block.Type.GRASS, true);
+										}
 										blocks.add(b);
 
-										if (rand.nextInt(200) == 10) {
+										if (rand.nextInt(200) == 10 && !noTree) {
 											blocks = TreeGenerator.makeTree(new Vector3f(b.x, b.y, b.z), blocks);
 										}
 
 										int index = 1;
-										while (true) {
+										/*while (true) {
 											if (b.y - index <= 24) {
 												break;
 											}
@@ -225,7 +248,7 @@ public class GameLoop {
 
 											blocks.add(new Block(b.x, b.y - index, b.z, Block.Type.STONE, true));
 											index++;
-										}
+										}*/
 									}
 								}
 

@@ -1,8 +1,5 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.gui;
 
-import static org.lwjgl.opengl.GL11.GL_TRIANGLE_STRIP;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL13.glActiveTexture;

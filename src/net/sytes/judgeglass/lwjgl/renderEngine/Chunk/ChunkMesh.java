@@ -49,6 +49,7 @@ public class ChunkMesh {
 		// Loop through in chunk and determine what face to draw
 		for (int i = 0; i < chunk.blocks.size(); i++) {
 			Block blockI = chunk.blocks.get(i);
+			
 
 			boolean px = false;
 			boolean nx = false;
@@ -61,6 +62,7 @@ public class ChunkMesh {
 				for (int j = 0; j < chunk.blocks.size(); j++) {
 					Block blockJ = chunk.blocks.get(j);
 					blockHandler.setType(blockI.type);
+					
 	
 					// PX
 					if (((blockI.x + 1) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {

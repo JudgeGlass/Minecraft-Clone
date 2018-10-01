@@ -11,6 +11,7 @@ import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockOakLeaves;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockOakLog;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockSand;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockStone;
+import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockWater;
 
 public class BlockTextureHandler {
 	private Block.Type type;
@@ -63,6 +64,9 @@ public class BlockTextureHandler {
 			setFaces(BlockSand.UV_FRONT, BlockSand.UV_BACK, BlockSand.UV_TOP, BlockSand.UV_BOTTOM,
 					BlockSand.UV_LEFT, BlockSand.UV_RIGHT);
 			break;
+		case WATER:
+			setFaces(BlockWater.UV_FRONT, BlockWater.UV_BACK, BlockWater.UV_TOP, BlockWater.UV_BOTTOM,
+					BlockWater.UV_LEFT, BlockWater.UV_RIGHT);
 
 		default:
 
