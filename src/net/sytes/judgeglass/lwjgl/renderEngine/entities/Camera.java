@@ -60,11 +60,11 @@ public class Camera {
 			}else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
 				position.x += 0.5f;
 			}else if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-				position.y += .5f;
+				position.y += 0.5f;
 			}else if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 				position.y -= 0.5f;
 			}else {
-				moveAt = 0;
+				moveAt = 0f;
 			}
 		}
 		

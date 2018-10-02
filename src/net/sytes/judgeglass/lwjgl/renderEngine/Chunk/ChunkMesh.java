@@ -8,6 +8,7 @@ import org.lwjgl.util.vector.Vector3f;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Block;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Vertex;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.AbstractCube;
+import net.sytes.judgeglass.lwjgl.renderEngine.entities.WaterCube;
 import net.sytes.judgeglass.lwjgl.renderEngine.world.BlockTextureHandler;
 
 public class ChunkMesh {
@@ -57,11 +58,12 @@ public class ChunkMesh {
 			boolean ny = true;
 			boolean pz = false;
 			boolean nz = false;
+			
+			blockHandler.setType(blockI.type);
 
 			if(blockI.hideFaces) {
 				for (int j = 0; j < chunk.blocks.size(); j++) {
 					Block blockJ = chunk.blocks.get(j);
-					blockHandler.setType(blockI.type);
 					
 	
 					// PX
@@ -99,6 +101,8 @@ public class ChunkMesh {
 
 			// Add visible faces to mesh
 
+			
+			
 			if (!px) {
 				for (int k = 0; k < 6; k++) {
 					vertices.add(
@@ -129,11 +133,19 @@ public class ChunkMesh {
 
 			if (!py) {
 				for (int k = 0; k < 6; k++) {
-					vertices.add(
-							new Vertex(
-									new Vector3f(AbstractCube.PY_POS[k].x + blockI.x,
-											AbstractCube.PY_POS[k].y + blockI.y, AbstractCube.PY_POS[k].z + blockI.z), // Top face
-									blockHandler.topFace[k], AbstractCube.NORMALS[k]));
+					if(blockHandler.getType() == Block.Type.WATER) {
+						vertices.add(
+								new Vertex(
+										new Vector3f(AbstractCube.PY_POS[k].x + blockI.x,
+												AbstractCube.PY_POS[k].y + blockI.y, AbstractCube.PY_POS[k].z + blockI.z), // Top face
+										blockHandler.topFace[k], AbstractCube.NORMALS[k]));
+					}else {
+						vertices.add(
+								new Vertex(
+										new Vector3f(AbstractCube.PY_POS[k].x + blockI.x,
+												AbstractCube.PY_POS[k].y + blockI.y, AbstractCube.PY_POS[k].z + blockI.z), // Top face
+										blockHandler.topFace[k], AbstractCube.NORMALS[k]));
+					}
 				}
 			}
 

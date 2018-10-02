@@ -1,5 +1,10 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.test;
 
+import static org.lwjgl.opengl.GL11.GL_FILL;
+import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
+import static org.lwjgl.opengl.GL11.GL_LINE;
+import static org.lwjgl.opengl.GL11.glPolygonMode;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +17,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import static org.lwjgl.opengl.GL11.*;
 
 import net.sytes.judgeglass.lwjgl.renderEngine.DisplayManager;
 import net.sytes.judgeglass.lwjgl.renderEngine.Loader;
@@ -22,6 +26,7 @@ import net.sytes.judgeglass.lwjgl.renderEngine.Chunk.ChunkMesh;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Block;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Camera;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Entity;
+import net.sytes.judgeglass.lwjgl.renderEngine.entities.Light;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontMeshCreator.FontType;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontMeshCreator.GUIText;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontRendering.TextMaster;
@@ -46,8 +51,12 @@ public class GameLoop {
 	private static List<ChunkMesh> chunks = Collections.synchronizedList(new ArrayList<ChunkMesh>());
 	private static List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<Vector3f>());
 	private static Vector3f camPos = new Vector3f(0, 0, 0);
-	private static final int WORLD = 7 * 16;
+	private static Random rand = new Random();
+	
+	private static final int WORLD = 16 * 16; // WORLD SIZE = 1024
 	private static final int viewDistance = 2;
+	private static int seed = 0;
+	
 	
 	private static boolean rendered = false;
 	private static boolean close = false;
@@ -55,17 +64,15 @@ public class GameLoop {
 	public static boolean inventoryOpen = false;
 	public static boolean menuOpen = false;
 	public static boolean polyMode = false;
-
-	/* Test */
-	private static List<Entity> removeEntity = Collections.synchronizedList(new ArrayList<Entity>());
-	private static List<ChunkMesh> removeMesh = Collections.synchronizedList(new ArrayList<ChunkMesh>());
-
+	
 	public static void main(String[] args) {
 		DisplayManager.createDisplay();
 		// start();
 	}
 
 	public static void start() {
+		seed = rand.nextInt();
+		System.out.println("SEED: " + seed);
 		playing = true;
 		new Thread(() -> {
 			MusicManager.play();
@@ -107,7 +114,7 @@ public class GameLoop {
 
 		ModelTexture mT = new ModelTexture(loader.loadTexture("atlas"));
 		FontType loadFont = new FontType(loader.loadTexture("sans"), new File("assets/fonts/sans.fnt"));
-
+		
 		int tick = 0;
 		int index = 0;
 		while (!Display.isCloseRequested() && !DisplayManager.awtCloseRequested) {
@@ -118,7 +125,7 @@ public class GameLoop {
 			renderer.render(camera);	
 			
 			if (index < chunks.size() && tick > 20) {
-				RawModel rModel = loader.loadToVAOChunk(chunks.get(index).positions, chunks.get(index).uvs);
+				RawModel rModel = loader.loadToVAOChunk(chunks.get(index).positions, chunks.get(index).normals, chunks.get(index).uvs);
 				TextureModel txt = new TextureModel(rModel, mT);
 				Entity e = new Entity(txt, chunks.get(index).chunk.origin, chunks.get(index));
 				if (!entities.contains(e))
@@ -145,11 +152,8 @@ public class GameLoop {
 					distZ = -distZ;
 				}
 
-				if ((distX <= WORLD * viewDistance) && (distZ <= WORLD * viewDistance)) {
+				if ((distX <= WORLD - (4 * 16) * viewDistance) && (distZ <= WORLD - (4 * 16) * viewDistance)) {
 					renderer.processEntity(e);
-				} else {
-					// removeEntity.add(e);
-					// removeMesh.add(e.getMesh());
 				}
 			}
 
@@ -199,14 +203,24 @@ public class GameLoop {
 			if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 					break;
 			}
+			
 
-			if (!rendered || chunks.size() < 64) {
+			if (!rendered || chunks.size() < 1023) {
+				System.out.println(String.format("Building Terrain: %d%%", (int)(((float)chunks.size() / 1024) * 100)));
+				
 				GUIText text = new GUIText("Building Terrain", 1.25f, loadFont, new Vector2f(.865f, -1f), 1f, false);
 				text.setColour(1, 1, 1);
+				
+				GUIText text2 = new GUIText((int)(((float)chunks.size() / 1024) * 100) + "%", 1.25f, loadFont, new Vector2f(.955f, -1.1f), 1f, false);
+				text2.setColour(1, 1, 1);
 
 				guiRenderer.render(loadBackground);
 				TextMaster.render();
 				TextMaster.removeText(text);
+				TextMaster.removeText(text2);
+				
+				text = null;
+				text2 = null;
 			} else {
 				loadBackground.clear();
 			}
@@ -257,9 +271,9 @@ public class GameLoop {
 
 	private static void makeChunks() {
 		new Thread(() -> {
-			Random rand = new Random();
 			PerlinNoiseGenerator perlinNoise = new PerlinNoiseGenerator(0, 0, 0, rand.nextInt());
-			while (!close) {
+			while (!close && chunks.size() <= 400) {
+				
 				List<Block> blocks = null;
 				for (int x = (int) (camPos.x - WORLD) / 16; x < (camPos.x + WORLD) / 16; x++)
 					for (int y = (int) (camPos.y - 16) / 16; y < (camPos.y + 16) / 16; y++) {
@@ -302,9 +316,9 @@ public class GameLoop {
 										
 										blocks.add(new Block(i, b.y-1, j, Block.Type.STONE, true));
 
-										/*int index = 1;
+										int index = 1;
 										
-										 while (true) { if (b.y - index <= 24) { break; }
+										 /*while (true) { if (b.y - index <= 24) { break; }
 										 
 										 if (index <= 3) { blocks.add(new Block(b.x, b.y - index, b.z,
 										  Block.Type.DIRT, true)); index++; continue; }

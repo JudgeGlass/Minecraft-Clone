@@ -55,6 +55,7 @@ public class Renderer {
 		glBindVertexArray(model.getRawModel().getVaoID());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, model.getTexture().getID());
@@ -64,6 +65,7 @@ public class Renderer {
 	private void unbindTextureModel() {
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
 		glBindVertexArray(0);
 	}
 

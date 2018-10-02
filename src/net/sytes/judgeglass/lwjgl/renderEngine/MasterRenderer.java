@@ -9,6 +9,7 @@ import org.lwjgl.util.vector.Matrix4f;
 
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Camera;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Entity;
+import net.sytes.judgeglass.lwjgl.renderEngine.entities.Light;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.shaders.StaticShader;
 

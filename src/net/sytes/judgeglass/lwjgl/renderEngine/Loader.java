@@ -43,10 +43,11 @@ public class Loader {
 		return new RawModel(vaoID, pos.length / 2);
 	}
 	
-	public RawModel loadToVAOChunk(float[] vertices, float[] uv) {
+	public RawModel loadToVAOChunk(float[] vertices, float normals[], float[] uv) {
 		int vaoID = createVAO();
 		storeDataInAttributeList(0, 3, vertices);
 		storeDataInAttributeList(1, 2, uv);
+		storeDataInAttributeList(2, 3, normals);
 		unbindVAO();
 		return new RawModel(vaoID, vertices.length);
 	}
@@ -64,7 +65,7 @@ public class Loader {
 		try {
 			texture = TextureLoader.getTexture("PNG", new FileInputStream("assets/textures/" + filename + ".png"));
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -4);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

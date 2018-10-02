@@ -3,6 +3,7 @@ package net.sytes.judgeglass.lwjgl.renderEngine.shaders;
 import org.lwjgl.util.vector.Matrix4f;
 
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Camera;
+import net.sytes.judgeglass.lwjgl.renderEngine.entities.Light;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.Maths;
 
 public class StaticShader extends ShaderProgram{
@@ -13,6 +14,8 @@ public class StaticShader extends ShaderProgram{
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;
 	private int location_viewMatrix;
+	private int location_lightPos;
+	private int location_lightColor;
 	
 	public StaticShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -22,6 +25,7 @@ public class StaticShader extends ShaderProgram{
 	protected void bindAttributes() {
 		super.bindAttribute(0, "position");
 		super.bindAttribute(1, "textureCoords");
+		super.bindAttribute(2, "normal");
 	}
 
 	@Override
@@ -29,6 +33,13 @@ public class StaticShader extends ShaderProgram{
 		location_transformationMatrix = super.getUniformLocation("transformationMatrix");
 		location_projectionMatrix = super.getUniformLocation("projectionMatrix");
 		location_viewMatrix = super.getUniformLocation("viewMatrix");
+		location_lightPos = super.getUniformLocation("lightPos");
+		location_lightColor = super.getUniformLocation("lightColor");
+	}
+	
+	public void loadLight(Light light) {
+		super.loadVector(location_lightPos, light.getPos());
+		super.loadVector(location_lightColor, light.getColor());
 	}
 	
 	public void loadTransformationMatrix(Matrix4f mat) {

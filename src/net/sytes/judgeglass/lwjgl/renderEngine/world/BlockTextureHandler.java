@@ -28,6 +28,10 @@ public class BlockTextureHandler {
 
 		getFaces();
 	}
+	
+	public Block.Type getType(){
+		return type;
+	}
 
 	private void getFaces() {
 		switch (type) {
