@@ -9,6 +9,7 @@ import net.sytes.judgeglass.lwjgl.renderEngine.Loader;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontMeshCreator.FontType;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontMeshCreator.GUIText;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontRendering.TextMaster;
+import net.sytes.judgeglass.lwjgl.renderEngine.test.GameLoop;
 
 public class GameStatus {
 	public static final String VERSION = "0.0.1a";
@@ -27,6 +28,7 @@ public class GameStatus {
 	private static GUIText authorText;
 	private static String cameraAngleStr;
 	private static String cameraPosStr;
+	private static GUIText seedText;
 	
 	public static void initFont(Loader loader) {
 		font = new FontType(loader.loadTexture("sans"), new File("assets/fonts/sans.fnt"));
@@ -81,6 +83,9 @@ public class GameStatus {
 		versionText.setColour(1, 1, 1);
 		authorText = new GUIText("Copyright 2018 Hunter Wilcox", 1.0f, font, new Vector2f(0, -.08f), 1f, false);
 		authorText.setColour(1, 1, 1);
+		
+		seedText = new GUIText("Seed:" + GameLoop.seed, 1.35f, font, new Vector2f(1.55f, 0), 1f, false);
+		seedText.setColour(1, 1, 1);
 	}
 	
 	public static void disableFPS() {

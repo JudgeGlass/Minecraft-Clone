@@ -55,7 +55,7 @@ public class GameLoop {
 	
 	private static final int WORLD = 16 * 16; // WORLD SIZE = 1024
 	private static final int viewDistance = 2;
-	private static int seed = 0;
+	public static int seed = 0;
 	
 	
 	private static boolean rendered = false;
@@ -73,6 +73,7 @@ public class GameLoop {
 	public static void start() {
 		seed = rand.nextInt();
 		System.out.println("SEED: " + seed);
+		System.out.println("Working DIR: " + System.getProperty("user.dir"));
 		playing = true;
 		new Thread(() -> {
 			MusicManager.play();

@@ -60,6 +60,10 @@ public class ChunkMesh {
 			boolean nz = false;
 			
 			blockHandler.setType(blockI.type);
+			
+			if(blockHandler.getType() == Block.Type.OAK_LEAVES) {
+				ny = false;
+			}
 
 			if(blockI.hideFaces) {
 				for (int j = 0; j < chunk.blocks.size(); j++) {
@@ -137,7 +141,7 @@ public class ChunkMesh {
 						vertices.add(
 								new Vertex(
 										new Vector3f(AbstractCube.PY_POS[k].x + blockI.x,
-												AbstractCube.PY_POS[k].y + blockI.y, AbstractCube.PY_POS[k].z + blockI.z), // Top face
+												WaterCube.PY_POS[k].y + blockI.y, AbstractCube.PY_POS[k].z + blockI.z), // Top face
 										blockHandler.topFace[k], AbstractCube.NORMALS[k]));
 					}else {
 						vertices.add(
