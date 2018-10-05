@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.GL_FILL;
 import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
 import static org.lwjgl.opengl.GL11.GL_LINE;
 import static org.lwjgl.opengl.GL11.glPolygonMode;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class GameLoop {
 	private static Random rand = new Random();
 	
 	private static final int WORLD = 16 * 16; // WORLD SIZE = 1024
-	private static final int viewDistance = 2;
+	private static final int viewDistance = 1;
 	public static int seed = 0;
 	private static String[] args;
 	
@@ -67,6 +68,7 @@ public class GameLoop {
 	public static boolean inventoryOpen = false;
 	public static boolean menuOpen = false;
 	public static boolean polyMode = false;
+	public static boolean updateView = false;
 	
 	public static void main(String[] args) {
 		DisplayManager.createDisplay();
@@ -127,12 +129,19 @@ public class GameLoop {
 		ModelTexture mT = new ModelTexture(loader.loadTexture("atlas"));
 		FontType loadFont = new FontType(loader.loadTexture("sans"), new File("assets/fonts/sans.fnt"));
 		
+		camPos = camera.getPosition();
+		
 		int tick = 0;
 		int index = 0;
 		while (!Display.isCloseRequested() && !DisplayManager.awtCloseRequested) {
-
+			
+			if(updateView) {
+				glViewport(0, 0, DisplayManager.cW, DisplayManager.cH);
+				updateView = false;
+			}
+			
 			camera.move();
-			camPos = camera.getPosition();
+			camera.setPosition(camPos);
 
 			renderer.render(camera);	
 			
@@ -169,6 +178,7 @@ public class GameLoop {
 				}
 			}
 
+			
 			while (Keyboard.next()) {
 				if (Keyboard.isKeyDown(Keyboard.KEY_F)) {
 					chunks.remove(entities.get(10).getMesh());
@@ -189,6 +199,8 @@ public class GameLoop {
 						glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 						polyMode = true;
 					}
+				}else if(Keyboard.isKeyDown(Keyboard.KEY_TAB)) {
+					Mouse.setGrabbed(false);
 				}
 			}
 
@@ -285,7 +297,7 @@ public class GameLoop {
 		new Thread(() -> {
 			PerlinNoiseGenerator perlinNoise = new PerlinNoiseGenerator(0, 0, 0, seed);
 			while (!close && chunks.size() <= 400) {
-				
+
 				List<Block> blocks = null;
 				for (int x = (int) (camPos.x - WORLD) / 16; x < (camPos.x + WORLD) / 16; x++)
 					for (int y = (int) (camPos.y - 16) / 16; y < (camPos.y + 16) / 16; y++) {
@@ -298,7 +310,7 @@ public class GameLoop {
 
 										int noise = (int) perlinNoise.generateHeight(i + (x * 16), j + (z * 16)) + 35;
 										// int noise = 25;
-
+										
 										Block b;
 										boolean noTree = false;
 										;
@@ -315,6 +327,8 @@ public class GameLoop {
 											noTree = true;
 										} else {
 											if (rand.nextInt(50) == 10) {
+												b = new Block(i, noise, j, Block.Type.GLASS, true);
+											}else if(rand.nextInt(20) == 5) {
 												b = new Block(i, noise, j, Block.Type.FARMLAND, true);
 											}
 											else

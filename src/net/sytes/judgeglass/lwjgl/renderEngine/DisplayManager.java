@@ -8,6 +8,8 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Panel;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -30,6 +32,9 @@ public class DisplayManager {
 	private static ContextAttribs attribs;
 	private static Panel menuPanel;
 	private static Panel gamePanel;
+	
+	public static int cH = 0;
+	public static int cW = 0;
 
 	public static boolean awtCloseRequested;
 
@@ -61,11 +66,20 @@ public class DisplayManager {
 				}
 			}
 		});
+		
+		frame.addComponentListener(new ComponentAdapter() {
+		    public void componentResized(ComponentEvent componentEvent) {
+		    	cH = canvas.getHeight();
+		    	cW = canvas.getWidth();
+		    	GameLoop.updateView = true;
+		    }
+		});
 
 		// Display.setFullscreen(true);
+		
 		frame.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		frame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
-		frame.setResizable(false);
+		//frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setTitle("Minecraft Clone v" + GameStatus.VERSION + " (Hunter Wilcox)");
 		frame.setVisible(true);
