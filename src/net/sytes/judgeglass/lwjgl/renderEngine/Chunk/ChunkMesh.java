@@ -51,13 +51,13 @@ public class ChunkMesh {
 		for (int i = 0; i < chunk.blocks.size(); i++) {
 			Block blockI = chunk.blocks.get(i);
 			
-
 			boolean px = false;
 			boolean nx = false;
 			boolean py = false;
-			boolean ny = true;
+			boolean ny = false;
 			boolean pz = false;
 			boolean nz = false;
+			
 			
 			blockHandler.setType(blockI.type);
 			
@@ -69,35 +69,43 @@ public class ChunkMesh {
 				for (int j = 0; j < chunk.blocks.size(); j++) {
 					Block blockJ = chunk.blocks.get(j);
 					
+					boolean isWater = ((blockJ.type == Block.Type.WATER) && !(blockI.type == Block.Type.WATER) || (blockJ.type == Block.Type.FARMLAND) && !(blockI.type == Block.Type.FARMLAND));
+					boolean isGlass = ((blockJ.type == Block.Type.GLASS));
 	
 					// PX
-					if (((blockI.x + 1) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {
-						px = true;
+					if (((blockI.x + 1) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z) == (blockJ.z))){
+						if(!isWater && !isGlass)
+							px = true;
 					}
 	
 					// NX
 					if (((blockI.x - 1) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {
-						nx = true;
+						if(!isWater && !isGlass)
+							nx = true;
 					}
 	
 					// PY
 					if (((blockI.x) == (blockJ.x)) && ((blockI.y + 1) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {
-						py = true;
+						if(!isWater && !isGlass)
+							py = true;
 					}
 	
 					// NY
 					if (((blockI.x) == (blockJ.x)) && ((blockI.y - 1) == (blockJ.y)) && ((blockI.z) == (blockJ.z))) {
-						ny = true;
+						if(!isWater && !isGlass)
+							ny = true;
 					}
 	
 					// PZ
 					if (((blockI.x) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z + 1) == (blockJ.z))) {
-						pz = true;
+						if(!isWater && !isGlass)
+							pz = true;
 					}
 	
 					// NZ
 					if (((blockI.x) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z - 1) == (blockJ.z))) {
-						nz = true;
+						if(!isWater && !isGlass)
+							nz = true;
 					}
 	
 				}
@@ -137,7 +145,7 @@ public class ChunkMesh {
 
 			if (!py) {
 				for (int k = 0; k < 6; k++) {
-					if(blockHandler.getType() == Block.Type.WATER) {
+					if(blockHandler.getType() == Block.Type.WATER || blockHandler.getType() == Block.Type.FARMLAND) {
 						vertices.add(
 								new Vertex(
 										new Vector3f(AbstractCube.PY_POS[k].x + blockI.x,
@@ -216,5 +224,12 @@ public class ChunkMesh {
 		positionsList.clear();
 		uvsList.clear();
 		normalsList.clear();
+		vertices.clear();
+		
+		positionsList = null;
+		uvsList = null;
+		normalsList = null;
+		vertices = null;
+		blockHandler = null;
 	}
 }

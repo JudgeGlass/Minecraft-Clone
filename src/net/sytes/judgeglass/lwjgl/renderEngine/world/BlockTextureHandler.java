@@ -4,7 +4,10 @@ import org.lwjgl.util.vector.Vector2f;
 
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Block;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Block.Type;
+import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockChest;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockDirt;
+import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockFarmLand;
+import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockGlass;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockGold;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockGrass;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockOakLeaves;
@@ -71,6 +74,21 @@ public class BlockTextureHandler {
 		case WATER:
 			setFaces(BlockWater.UV_FRONT, BlockWater.UV_BACK, BlockWater.UV_TOP, BlockWater.UV_BOTTOM,
 					BlockWater.UV_LEFT, BlockWater.UV_RIGHT);
+			break;
+		case CHEST:
+			setFaces(BlockChest.UV_FRONT, BlockChest.UV_BACK, BlockChest.UV_TOP, BlockChest.UV_BOTTOM,
+					BlockChest.UV_LEFT, BlockChest.UV_RIGHT);
+			break;
+			
+		case GLASS:
+			setFaces(BlockGlass.UV_FRONT, BlockGlass.UV_BACK, BlockGlass.UV_TOP, BlockGlass.UV_BOTTOM,
+					BlockGlass.UV_LEFT, BlockGlass.UV_RIGHT);
+			break;
+			
+		case FARMLAND:
+			setFaces(BlockFarmLand.UV_FRONT, BlockFarmLand.UV_BACK, BlockFarmLand.UV_TOP, BlockFarmLand.UV_BOTTOM,
+					BlockFarmLand.UV_LEFT, BlockFarmLand.UV_RIGHT);
+			break;
 
 		default:
 

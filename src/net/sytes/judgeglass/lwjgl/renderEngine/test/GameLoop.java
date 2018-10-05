@@ -24,6 +24,7 @@ import net.sytes.judgeglass.lwjgl.renderEngine.MasterRenderer;
 import net.sytes.judgeglass.lwjgl.renderEngine.Chunk.Chunk;
 import net.sytes.judgeglass.lwjgl.renderEngine.Chunk.ChunkMesh;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Block;
+import net.sytes.judgeglass.lwjgl.renderEngine.File.Save;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Camera;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Entity;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Light;
@@ -36,6 +37,7 @@ import net.sytes.judgeglass.lwjgl.renderEngine.models.RawModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.textures.ModelTexture;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.GameStatus;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.Maths;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.MusicManager;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.PerlinNoiseGenerator;
 import net.sytes.judgeglass.lwjgl.renderEngine.world.TreeGenerator;
@@ -56,6 +58,7 @@ public class GameLoop {
 	private static final int WORLD = 16 * 16; // WORLD SIZE = 1024
 	private static final int viewDistance = 2;
 	public static int seed = 0;
+	private static String[] args;
 	
 	
 	private static boolean rendered = false;
@@ -67,11 +70,19 @@ public class GameLoop {
 	
 	public static void main(String[] args) {
 		DisplayManager.createDisplay();
-		// start();
+		GameLoop.args = args;
 	}
 
 	public static void start() {
-		seed = rand.nextInt();
+		
+		if(args.length > 0) {
+			if(args[0].equals("-s")) {
+				seed = Maths.generateSeed(args[1]);
+			}
+		}else {
+			seed = rand.nextInt();
+		}
+		
 		System.out.println("SEED: " + seed);
 		System.out.println("Working DIR: " + System.getProperty("user.dir"));
 		playing = true;
@@ -94,7 +105,7 @@ public class GameLoop {
 
 		GuiRenderer guiRenderer = new GuiRenderer(loader);
 		GuiTexture gui3 = new GuiTexture(loader.loadTexture("ch"), new Vector2f(0.0f, 0.0f),
-				new Vector2f(0.02f, 0.03f));
+				new Vector2f(0.015f, 0.02f));
 		GuiTexture hotBar = new GuiTexture(loader.loadTexture("hotbar"), new Vector2f(0.05f, -.89f),
 				new Vector2f(.5f, .095f));
 		GuiTexture inventory = new GuiTexture(loader.loadTexture("inventory"), new Vector2f(0, 0),
@@ -153,7 +164,7 @@ public class GameLoop {
 					distZ = -distZ;
 				}
 
-				if ((distX <= WORLD - (4 * 16) * viewDistance) && (distZ <= WORLD - (4 * 16) * viewDistance)) {
+				if ((distX <= (WORLD - (4 * 16)) * viewDistance) && (distZ <= (WORLD - (4 * 16)) * viewDistance)) {
 					renderer.processEntity(e);
 				}
 			}
@@ -237,7 +248,7 @@ public class GameLoop {
 				tick++;
 			}
 		}
-
+		
 		close = true;
 		guiRenderer.clean();
 		TextMaster.cleanUp();
@@ -272,7 +283,7 @@ public class GameLoop {
 
 	private static void makeChunks() {
 		new Thread(() -> {
-			PerlinNoiseGenerator perlinNoise = new PerlinNoiseGenerator(0, 0, 0, rand.nextInt());
+			PerlinNoiseGenerator perlinNoise = new PerlinNoiseGenerator(0, 0, 0, seed);
 			while (!close && chunks.size() <= 400) {
 				
 				List<Block> blocks = null;
@@ -304,7 +315,7 @@ public class GameLoop {
 											noTree = true;
 										} else {
 											if (rand.nextInt(50) == 10) {
-												b = new Block(i, noise, j, Block.Type.DIRT, true);
+												b = new Block(i, noise, j, Block.Type.FARMLAND, true);
 											}
 											else
 												b = new Block(i, noise, j, Block.Type.GRASS, true);
@@ -315,11 +326,11 @@ public class GameLoop {
 											blocks = TreeGenerator.makeTree(new Vector3f(b.x, b.y, b.z), blocks);
 										}
 										
-										blocks.add(new Block(i, b.y-1, j, Block.Type.STONE, true));
+										blocks.add(new Block(i, b.y-1, j, Block.Type.DIRT, true));
 
-										int index = 1;
+										/*int index = 1;
 										
-										 /*while (true) { if (b.y - index <= 24) { break; }
+										 while (true) { if (b.y - index <= 24) { break; }
 										 
 										 if (index <= 3) { blocks.add(new Block(b.x, b.y - index, b.z,
 										  Block.Type.DIRT, true)); index++; continue; }

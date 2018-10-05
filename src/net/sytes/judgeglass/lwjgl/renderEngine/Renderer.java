@@ -1,9 +1,21 @@
 package net.sytes.judgeglass.lwjgl.renderEngine;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,9 +23,9 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
 
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Entity;
-import net.sytes.judgeglass.lwjgl.renderEngine.models.RawModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.shaders.StaticShader;
+import net.sytes.judgeglass.lwjgl.renderEngine.textures.ModelTexture;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.Maths;
 
 public class Renderer {
@@ -25,6 +37,9 @@ public class Renderer {
 	private Matrix4f projectionMatrix;
 
 	private StaticShader shader;
+	
+	private Loader loader = new Loader();
+	ModelTexture texture = new ModelTexture(loader.loadTexture("atlas"));
 
 	public Renderer(StaticShader shader) {
 		this.shader = shader;
@@ -57,8 +72,10 @@ public class Renderer {
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
+		
+		
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, model.getTexture().getID());
+		glBindTexture(GL_TEXTURE_2D, texture.getID());
 
 	}
 

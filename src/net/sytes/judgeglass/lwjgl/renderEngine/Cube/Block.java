@@ -10,7 +10,7 @@ public class Block {
 	public boolean hideFaces;
 
 	public static enum Type {
-		AIR, DIRT, GRASS, STONE, OAK_LOG, OAK_LEAVES, GOLD_BLOCK, SAND, WATER
+		AIR, DIRT, GRASS, STONE, OAK_LOG, OAK_LEAVES, GOLD_BLOCK, SAND, WATER, CHEST, GLASS, FARMLAND
 	};
 
 	public Type type;

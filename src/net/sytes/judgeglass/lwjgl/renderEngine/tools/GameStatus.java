@@ -45,22 +45,6 @@ public class GameStatus {
 		cameraAngleStr = String.format("Camera X/Y: (%.2f, %.2f)", cameraAngle.x, cameraAngle.y);
 		cameraPosStr = String.format("x: %.02f y: %.2f z: %.2f", cameraPos.x, cameraPos.y, cameraPos.z);
 		
-		if(fpsText != null) {
-			TextMaster.removeText(fpsText);
-		}
-		
-		if(versionText != null) {
-			TextMaster.removeText(versionText);
-		}
-		
-		if(cameraAngleText != null) {
-			TextMaster.removeText(cameraAngleText);
-		}
-		
-		if(cameraPosText != null) {
-			TextMaster.removeText(cameraPosText);
-		}
-		
 		//versionText = new GUIText("Minecraft Clone v" + VERSION, 1.5f, font, new Vector2f(0, 0), 1f, false);
 		//versionText.setColour(1, 1, 1);
 		
@@ -72,6 +56,8 @@ public class GameStatus {
 			cameraPosText = new GUIText(cameraPosStr, 1.5f, font, new Vector2f(0, -.23f), 1f, false);
 			cameraPosText.setColour(1, 1, 1);
 		}
+		
+		
 	}
 	
 	public static void updateStatus() {

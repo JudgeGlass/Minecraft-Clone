@@ -1,5 +1,8 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.tools;
 
+import java.util.Random;
+import java.lang.instrument.Instrumentation;
+
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -56,5 +59,11 @@ public class Maths {
 		return (float) Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2) + Math.pow(p2.z - p1.z, 2));
 	}
 	
-	
+	public static int generateSeed(String str_seed) {
+		if(!str_seed.isEmpty()) {
+			try {return Integer.parseInt(str_seed);}catch(Exception e) {e.printStackTrace();}
+		}
+		
+		return new Random().nextInt();
+	}
 }
