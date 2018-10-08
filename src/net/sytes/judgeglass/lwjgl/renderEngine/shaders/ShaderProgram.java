@@ -86,7 +86,7 @@ public abstract class ShaderProgram {
 	protected void loadMatrix4f(int location, Matrix4f mat) {
 		mat.store(buffer);
 		buffer.flip();
-		glUniformMatrix4(location, false, buffer);
+		glUniformMatrix4fv(location, false, buffer);
 	}
 	
 	private static int loadShader(String file, int type) {

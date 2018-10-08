@@ -1,8 +1,20 @@
 package net.sytes.judgeglass.lwjgl.renderEngine;
 
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15.glBindBuffer;
+import static org.lwjgl.opengl.GL15.glBufferData;
+import static org.lwjgl.opengl.GL15.glDeleteBuffers;
+import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,18 +26,19 @@ import java.util.List;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import net.sytes.judgeglass.lwjgl.renderEngine.models.RawModel;
+import net.sytes.judgeglass.lwjgl.renderEngine.models.Texture;
 
-import static org.lwjgl.opengl.GL15.*;
+
 
 public class Loader {
 	
 	private List<Integer> vaos = new ArrayList<>();
 	private List<Integer> vbos = new ArrayList<>();
 	private List<Integer> textures = new ArrayList<>();
+	private Texture texture = new Texture();
 	
 	/*public RawModel loadToVAO(float[] positions, float[] textureCoords,int[] indices) {
 		int vaoID = createVAO();
@@ -61,19 +74,7 @@ public class Loader {
 	}
 	
 	public int loadTexture(String filename) {
-		Texture texture = null;
-		try {
-			texture = TextureLoader.getTexture("PNG", new FileInputStream("assets/textures/" + filename + ".png"));
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -4);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		int textureID = texture.getTextureID();
+		int textureID = texture.loadTexture("assets/textures/" + filename + ".png", GL_NEAREST);
 		textures.add(textureID);
 		return textureID;
 	}

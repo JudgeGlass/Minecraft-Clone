@@ -3,9 +3,9 @@ package net.sytes.judgeglass.lwjgl.renderEngine.tools;
 import java.io.File;
 
 import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
 
 import net.sytes.judgeglass.lwjgl.renderEngine.Loader;
+import net.sytes.judgeglass.lwjgl.renderEngine.entities.Camera;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontMeshCreator.FontType;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontMeshCreator.GUIText;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontRendering.TextMaster;
@@ -14,7 +14,7 @@ import net.sytes.judgeglass.lwjgl.renderEngine.test.GameLoop;
 public class GameStatus {
 	public static final String VERSION = "0.0.1a";
 	
-	public static Vector3f cameraPos = new Vector3f(0, 0, 0);
+	//public static Vector3f cameraPos = new Vector3f(0, 0, 0);
 	public static Vector2f cameraAngle = new Vector2f(0, 0);
 	public static int FPS;
 	public static boolean show = true;
@@ -36,14 +36,14 @@ public class GameStatus {
 	
 	public static String getGameInfo() {
 		String cameraAngleStr = String.format("Camera X/Y: (%.2f, %.2f)", cameraAngle.x, cameraAngle.y);
-		String cameraPosStr = String.format("x: %.02f\ny: %.2f\nz: %.2f", cameraPos.x, cameraPos.y, cameraPos.z);
+		String cameraPosStr = String.format("x: %.02f\ny: %.2f\nz: %.2f", Camera.position.x, Camera.position.y, Camera.position.z);
 		String combine = "FPS: " + FPS +"\n" + cameraAngleStr + "\n" + cameraPosStr;
 		return combine;
 	}
 	
 	public static void showGameStatus() {
 		cameraAngleStr = String.format("Camera X/Y: (%.2f, %.2f)", cameraAngle.x, cameraAngle.y);
-		cameraPosStr = String.format("x: %.02f y: %.2f z: %.2f", cameraPos.x, cameraPos.y, cameraPos.z);
+		cameraPosStr = String.format("x: %.02f y: %.2f z: %.2f", Camera.position.x, Camera.position.y, Camera.position.z);
 		
 		//versionText = new GUIText("Minecraft Clone v" + VERSION, 1.5f, font, new Vector2f(0, 0), 1f, false);
 		//versionText.setColour(1, 1, 1);
@@ -78,5 +78,11 @@ public class GameStatus {
 		TextMaster.removeText(fpsText);
 		TextMaster.removeText(cameraAngleText);
 		TextMaster.removeText(cameraPosText);
+	}
+	
+	public static void remove() {
+		fpsText.remove();
+		cameraAngleText.remove();
+		cameraPosText.remove();
 	}
 }

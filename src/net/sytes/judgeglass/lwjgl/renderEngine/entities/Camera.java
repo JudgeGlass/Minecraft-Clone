@@ -1,16 +1,24 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.entities;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
+
+//import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import net.sytes.judgeglass.lwjgl.renderEngine.test.GameLoop;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.GameStatus;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.KeyboardHandler;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.MouseHandler;
 
 
 public class Camera {
-	private Vector3f position = new Vector3f(900, 50, 400);
+	public static Vector3f position = new Vector3f(0, 50, 0);
 	private float pitch;
 	private float yaw;
 	private float roll;
@@ -27,18 +35,17 @@ public class Camera {
 
 	public void move() {
 		GameStatus.cameraAngle = new Vector2f(rotX, rotY);
-		GameStatus.cameraPos = position;
 		
 		if(!GameLoop.inventoryOpen) {
 			if(rotX < 90)
-				rotX += -Mouse.getDY() * .07f;
+				rotX += MouseHandler.getDY() * 0.08f;
 			else
 				rotX -= 3;
 			
 			if(rotX < -90)
 				rotX += 3;
 			
-			rotY += Mouse.getDX() * .07f;
+			rotY += MouseHandler.getDX() * 0.08f;
 		}
 		
 		
@@ -51,18 +58,18 @@ public class Camera {
 		position.z += dz;
 		
 		if(!GameLoop.inventoryOpen) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+			if (KeyboardHandler.isPressed(GLFW_KEY_W)) {
 				moveAt = -moveSpeed;
-			}else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+			}else if (KeyboardHandler.isPressed(GLFW_KEY_S)) {
 				moveAt = moveSpeed;
-			}else if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-				position.x -= 0.5f;
-			}else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-				position.x += 0.5f;
-			}else if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-				position.y += 0.5f;
-			}else if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				position.y -= 0.5f;
+			}else if (KeyboardHandler.isPressed(GLFW_KEY_D)) {
+				position.x -= 0.3f;
+			}else if (KeyboardHandler.isPressed(GLFW_KEY_A)) {
+				position.x += 0.3f;
+			}else if(KeyboardHandler.isPressed(GLFW_KEY_SPACE)) {
+				position.y += 0.3f;
+			}else if(KeyboardHandler.isPressed(GLFW_KEY_LEFT_SHIFT)) {
+				position.y -= 0.3f;
 			}else {
 				moveAt = 0f;
 			}
@@ -103,7 +110,7 @@ public class Camera {
 	}
 
 	public void setPosition(Vector3f position) {
-		this.position = position;
+		Camera.position = position;
 	}
 
 	public float getPitch() {

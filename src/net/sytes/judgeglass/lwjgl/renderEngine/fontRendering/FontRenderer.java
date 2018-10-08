@@ -21,7 +21,7 @@ public class FontRenderer {
 
 	public void render(Map<FontType, List<GUIText>> texts) {
 		prepare();
-
+		
 		for (FontType font : texts.keySet()) {
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, font.getTextureAtlas());
@@ -29,6 +29,7 @@ public class FontRenderer {
 			for (GUIText text : texts.get(font)) {
 				renderText(text);
 			}
+			
 		}
 
 		endRendering();

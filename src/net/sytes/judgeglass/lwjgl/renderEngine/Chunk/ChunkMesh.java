@@ -3,20 +3,19 @@ package net.sytes.judgeglass.lwjgl.renderEngine.Chunk;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.util.vector.Vector3f;
-
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Block;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Vertex;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.AbstractCube;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.WaterCube;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.Vector3;
 import net.sytes.judgeglass.lwjgl.renderEngine.world.BlockTextureHandler;
 
 public class ChunkMesh {
 	private List<Vertex> vertices;
 
-	private List<Float> positionsList;
-	private List<Float> uvsList;
-	private List<Float> normalsList;
+	private ArrayList<Float> positionsList;
+	private ArrayList<Float> uvsList;
+	private ArrayList<Float> normalsList;
 	
 	private BlockTextureHandler blockHandler = new BlockTextureHandler();
 
@@ -119,7 +118,7 @@ public class ChunkMesh {
 				for (int k = 0; k < 6; k++) {
 					vertices.add(
 							new Vertex(
-									new Vector3f(AbstractCube.PX_POS[k].x + blockI.x,
+									new Vector3(AbstractCube.PX_POS[k].x + blockI.x,
 											AbstractCube.PX_POS[k].y + blockI.y, AbstractCube.PX_POS[k].z + blockI.z), // Left or Right?
 									blockHandler.leftFace[k], AbstractCube.NORMALS[k]));
 				}
@@ -129,7 +128,7 @@ public class ChunkMesh {
 				for (int k = 0; k < 6; k++) {
 					vertices.add(
 							new Vertex(
-									new Vector3f(AbstractCube.NX_POS[k].x + blockI.x,
+									new Vector3(AbstractCube.NX_POS[k].x + blockI.x,
 											AbstractCube.NX_POS[k].y + blockI.y, AbstractCube.NX_POS[k].z + blockI.z), // Left or Right?
 									blockHandler.rightFace[k], AbstractCube.NORMALS[k]));
 				}
@@ -137,7 +136,7 @@ public class ChunkMesh {
 				for (int k = 0; k < 6; k++) {
 					vertices.add(
 							new Vertex(
-									new Vector3f(AbstractCube.NX_POS[k].x + blockI.x,
+									new Vector3(AbstractCube.NX_POS[k].x + blockI.x,
 											AbstractCube.NX_POS[k].y + blockI.y, AbstractCube.NX_POS[k].z + blockI.z), // Left or Right?
 									blockHandler.rightFace[k], AbstractCube.NORMALS[k]));
 				}
@@ -148,13 +147,13 @@ public class ChunkMesh {
 					if(blockHandler.getType() == Block.Type.WATER || blockHandler.getType() == Block.Type.FARMLAND) {
 						vertices.add(
 								new Vertex(
-										new Vector3f(AbstractCube.PY_POS[k].x + blockI.x,
+										new Vector3(AbstractCube.PY_POS[k].x + blockI.x,
 												WaterCube.PY_POS[k].y + blockI.y, AbstractCube.PY_POS[k].z + blockI.z), // Top face
 										blockHandler.topFace[k], AbstractCube.NORMALS[k]));
 					}else {
 						vertices.add(
 								new Vertex(
-										new Vector3f(AbstractCube.PY_POS[k].x + blockI.x,
+										new Vector3(AbstractCube.PY_POS[k].x + blockI.x,
 												AbstractCube.PY_POS[k].y + blockI.y, AbstractCube.PY_POS[k].z + blockI.z), // Top face
 										blockHandler.topFace[k], AbstractCube.NORMALS[k]));
 					}
@@ -165,7 +164,7 @@ public class ChunkMesh {
 				for (int k = 0; k < 6; k++) {
 					vertices.add(
 							new Vertex(
-									new Vector3f(AbstractCube.NY_POS[k].x + blockI.x,
+									new Vector3(AbstractCube.NY_POS[k].x + blockI.x,
 											AbstractCube.NY_POS[k].y + blockI.y, AbstractCube.NY_POS[k].z + blockI.z), // Bottom face
 									blockHandler.bottomFace[k], AbstractCube.NORMALS[k]));
 				}
@@ -175,7 +174,7 @@ public class ChunkMesh {
 				for (int k = 0; k < 6; k++) {
 					vertices.add(
 							new Vertex(
-									new Vector3f(AbstractCube.PZ_POS[k].x + blockI.x,
+									new Vector3(AbstractCube.PZ_POS[k].x + blockI.x,
 											AbstractCube.PZ_POS[k].y + blockI.y, AbstractCube.PZ_POS[k].z + blockI.z), // Front or back?
 									blockHandler.frontFace[k], AbstractCube.NORMALS[k]));
 				}
@@ -185,7 +184,7 @@ public class ChunkMesh {
 				for (int k = 0; k < 6; k++) {
 					vertices.add(
 							new Vertex(
-									new Vector3f(AbstractCube.NZ_POS[k].x + blockI.x,
+									new Vector3(AbstractCube.NZ_POS[k].x + blockI.x,
 											AbstractCube.NZ_POS[k].y + blockI.y, AbstractCube.NZ_POS[k].z + blockI.z), // Front or back?
 									blockHandler.backFace[k], AbstractCube.NORMALS[k]));
 				}

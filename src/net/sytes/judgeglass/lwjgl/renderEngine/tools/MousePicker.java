@@ -1,12 +1,11 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.tools;
 
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
+import net.sytes.judgeglass.lwjgl.renderEngine.DisplayManager;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Camera;
 
 public class MousePicker {	
@@ -41,8 +40,8 @@ public class MousePicker {
 	}
 	
 	private Vector3f calculateMouseRay() {
-		float mouseX = Mouse.getX();
-		float mouseY = Mouse.getY();
+		float mouseX = 0;
+		float mouseY = 0;
 		
 		Vector2f normalizedCoords = getNormalizedCoords(mouseX, mouseY);
 		Vector4f clipCoords = new Vector4f(normalizedCoords.x, normalizedCoords.y, -1f, 1f);
@@ -66,8 +65,8 @@ public class MousePicker {
 	}
 	
 	private Vector2f getNormalizedCoords(float mouseX, float mouseY) {
-		float x = (2f * mouseX) / Display.getWidth() - 1f;
-		float y = (2f * mouseY) / Display.getHeight() - 1f;
+		float x = (2f * mouseX) / DisplayManager.WIDTH - 1f;
+		float y = (2f * mouseY) / DisplayManager.HEIGHT - 1f;
 		
 		return new Vector2f(x, y);
 	}

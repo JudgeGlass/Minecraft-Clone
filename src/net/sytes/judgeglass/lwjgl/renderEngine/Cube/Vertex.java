@@ -1,15 +1,16 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.Cube;
 
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.Vector2;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.Vector3;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.Vector3i;
 
 public class Vertex {
-	public Vector3f positions;
-	public Vector3f normals;
+	public Vector3 positions;
+	public Vector3 normals;
 	
-	public Vector2f uvs;
+	public Vector2 uvs;
 	
-	public Vertex(Vector3f positions, Vector2f uvs, Vector3f normals) {
+	public Vertex(Vector3 positions, Vector2 uvs, Vector3 normals) {
 		this.positions = positions;
 		this.uvs = uvs;
 		this.normals = normals;

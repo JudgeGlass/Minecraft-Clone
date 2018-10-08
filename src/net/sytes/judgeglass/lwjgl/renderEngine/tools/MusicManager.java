@@ -3,7 +3,6 @@ package net.sytes.judgeglass.lwjgl.renderEngine.tools;
 import java.io.IOException;
 import java.util.Random;
 
-import org.newdawn.easyogg.OggClip;
 import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.util.ResourceLoader;

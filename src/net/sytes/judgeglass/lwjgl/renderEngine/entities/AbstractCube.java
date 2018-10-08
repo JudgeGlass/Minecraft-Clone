@@ -1,72 +1,73 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.entities;
 
 import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
+
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.Vector3;
 
 public class AbstractCube {
-public static Vector3f[] PX_POS = {
+public static Vector3[] PX_POS = {
 			
-			new Vector3f(0.5f,0.5f,-0.5f),
-			new Vector3f(0.5f,-0.5f,-0.5f),
-			new Vector3f(0.5f,-0.5f,0.5f),
-			new Vector3f(0.5f,-0.5f,0.5f),
-			new Vector3f(0.5f,0.5f,0.5f),
-			new Vector3f(0.5f,0.5f,-0.5f)
-			
-	};
-	
-	public static Vector3f[] NX_POS = {
-			
-			new Vector3f(-0.5f,0.5f,-0.5f),
-			new Vector3f(-0.5f,-0.5f,-0.5f),
-			new Vector3f(-0.5f,-0.5f,0.5f),
-			new Vector3f(-0.5f,-0.5f,0.5f),
-			new Vector3f(-0.5f,0.5f,0.5f),
-			new Vector3f(-0.5f,0.5f,-0.5f)
+			new Vector3(0.5f,0.5f,-0.5f),
+			new Vector3(0.5f,-0.5f,-0.5f),
+			new Vector3(0.5f,-0.5f,0.5f),
+			new Vector3(0.5f,-0.5f,0.5f),
+			new Vector3(0.5f,0.5f,0.5f),
+			new Vector3(0.5f,0.5f,-0.5f)
 			
 	};
 	
-	public static Vector3f[] PY_POS = {
+	public static Vector3[] NX_POS = {
 			
-			new Vector3f(-0.5f,0.5f,0.5f),
-			new Vector3f(-0.5f,0.5f,-0.5f),
-			new Vector3f(0.5f,0.5f,-0.5f),
-			new Vector3f(0.5f,0.5f,-0.5f),
-			new Vector3f(0.5f,0.5f,0.5f),
-			new Vector3f(-0.5f,0.5f,0.5f)
-			
-	};
-	
-	public static Vector3f[] NY_POS = {
-			
-			new Vector3f(-0.5f,-0.5f,0.5f),
-			new Vector3f(-0.5f,-0.5f,-0.5f),
-			new Vector3f(0.5f,-0.5f,-0.5f),
-			new Vector3f(0.5f,-0.5f,-0.5f),
-			new Vector3f(0.5f,-0.5f,0.5f),
-			new Vector3f(-0.5f,-0.5f,0.5f)
+			new Vector3(-0.5f,0.5f,-0.5f),
+			new Vector3(-0.5f,-0.5f,-0.5f),
+			new Vector3(-0.5f,-0.5f,0.5f),
+			new Vector3(-0.5f,-0.5f,0.5f),
+			new Vector3(-0.5f,0.5f,0.5f),
+			new Vector3(-0.5f,0.5f,-0.5f)
 			
 	};
 	
-	public static Vector3f[] PZ_POS = {
+	public static Vector3[] PY_POS = {
 			
-			new Vector3f(-0.5f,0.5f,0.5f),
-			new Vector3f(-0.5f,-0.5f,0.5f),
-			new Vector3f(0.5f,-0.5f,0.5f),
-			new Vector3f(0.5f,-0.5f,0.5f),
-			new Vector3f(0.5f,0.5f,0.5f),
-			new Vector3f(-0.5f,0.5f,0.5f)
+			new Vector3(-0.5f,0.5f,0.5f),
+			new Vector3(-0.5f,0.5f,-0.5f),
+			new Vector3(0.5f,0.5f,-0.5f),
+			new Vector3(0.5f,0.5f,-0.5f),
+			new Vector3(0.5f,0.5f,0.5f),
+			new Vector3(-0.5f,0.5f,0.5f)
 			
 	};
 	
-	public static Vector3f[] NZ_POS = {
+	public static Vector3[] NY_POS = {
 			
-			new Vector3f(-0.5f,0.5f,-0.5f),
-			new Vector3f(-0.5f,-0.5f,-0.5f),
-			new Vector3f(0.5f,-0.5f,-0.5f),
-			new Vector3f(0.5f,-0.5f,-0.5f),
-			new Vector3f(0.5f,0.5f,-0.5f),
-			new Vector3f(-0.5f,0.5f,-0.5f)
+			new Vector3(-0.5f,-0.5f,0.5f),
+			new Vector3(-0.5f,-0.5f,-0.5f),
+			new Vector3(0.5f,-0.5f,-0.5f),
+			new Vector3(0.5f,-0.5f,-0.5f),
+			new Vector3(0.5f,-0.5f,0.5f),
+			new Vector3(-0.5f,-0.5f,0.5f)
+			
+	};
+	
+	public static Vector3[] PZ_POS = {
+			
+			new Vector3(-0.5f,0.5f,0.5f),
+			new Vector3(-0.5f,-0.5f,0.5f),
+			new Vector3(0.5f,-0.5f,0.5f),
+			new Vector3(0.5f,-0.5f,0.5f),
+			new Vector3(0.5f,0.5f,0.5f),
+			new Vector3(-0.5f,0.5f,0.5f)
+			
+	};
+	
+	public static Vector3[] NZ_POS = {
+			
+			new Vector3(-0.5f,0.5f,-0.5f),
+			new Vector3(-0.5f,-0.5f,-0.5f),
+			new Vector3(0.5f,-0.5f,-0.5f),
+			new Vector3(0.5f,-0.5f,-0.5f),
+			new Vector3(0.5f,0.5f,-0.5f),
+			new Vector3(-0.5f,0.5f,-0.5f)
 			
 	};
 	
@@ -81,14 +82,14 @@ public static Vector3f[] PX_POS = {
 			
 	};
 	
-	public static Vector3f[] NORMALS = {
+	public static Vector3[] NORMALS = {
 			
-			new Vector3f(0.f, 0.f, 0.f),
-			new Vector3f(0.f, 0.f, 0.f),
-			new Vector3f(0.f, 0.f, 0.f),
-			new Vector3f(0.f, 0.f, 0.f),
-			new Vector3f(0.f, 0.f, 0.f),
-			new Vector3f(0.f, 0.f, 0.f)
+			new Vector3(0.f, 0.f, 0.f),
+			new Vector3(0.f, 0.f, 0.f),
+			new Vector3(0.f, 0.f, 0.f),
+			new Vector3(0.f, 0.f, 0.f),
+			new Vector3(0.f, 0.f, 0.f),
+			new Vector3(0.f, 0.f, 0.f)
 			
 	};
 	

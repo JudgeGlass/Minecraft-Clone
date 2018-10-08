@@ -1,10 +1,9 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.world;
 
-import org.lwjgl.util.vector.Vector2f;
-
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Block;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Block.Type;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockChest;
+import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockCobbleStone;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockDirt;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockFarmLand;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockGlass;
@@ -12,19 +11,21 @@ import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockGold;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockGrass;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockOakLeaves;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockOakLog;
+import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockOakWood;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockSand;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockStone;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockWater;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.Vector2;
 
 public class BlockTextureHandler {
 	private Block.Type type;
 
-	public Vector2f[] frontFace;
-	public Vector2f[] backFace;
-	public Vector2f[] topFace;
-	public Vector2f[] bottomFace;
-	public Vector2f[] leftFace;
-	public Vector2f[] rightFace;
+	public Vector2[] frontFace;
+	public Vector2[] backFace;
+	public Vector2[] topFace;
+	public Vector2[] bottomFace;
+	public Vector2[] leftFace;
+	public Vector2[] rightFace;
 
 	public void setType(Type type) {
 		this.type = type;
@@ -88,6 +89,16 @@ public class BlockTextureHandler {
 		case FARMLAND:
 			setFaces(BlockFarmLand.UV_FRONT, BlockFarmLand.UV_BACK, BlockFarmLand.UV_TOP, BlockFarmLand.UV_BOTTOM,
 					BlockFarmLand.UV_LEFT, BlockFarmLand.UV_RIGHT);
+			break;	
+			
+		case OAK_WOOD:
+			setFaces(BlockOakWood.UV_FRONT, BlockOakWood.UV_BACK, BlockOakWood.UV_TOP, BlockOakWood.UV_BOTTOM,
+					BlockOakWood.UV_LEFT, BlockOakWood.UV_RIGHT);
+			break;
+			
+		case COBBLESTONE:
+			setFaces(BlockCobbleStone.UV_FRONT, BlockCobbleStone.UV_BACK, BlockCobbleStone.UV_TOP, BlockCobbleStone.UV_BOTTOM,
+					BlockCobbleStone.UV_LEFT, BlockCobbleStone.UV_RIGHT);
 			break;
 
 		default:
@@ -95,8 +106,8 @@ public class BlockTextureHandler {
 		}
 	}
 
-	private void setFaces(Vector2f[] front, Vector2f[] back, Vector2f[] top, Vector2f[] bottom, Vector2f[] left,
-			Vector2f[] right) {
+	private void setFaces(Vector2[] front, Vector2[] back, Vector2[] top, Vector2[] bottom, Vector2[] left,
+			Vector2[] right) {
 		frontFace = front;
 		backFace = back;
 		topFace = top;

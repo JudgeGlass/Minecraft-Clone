@@ -1,10 +1,19 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.test;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_P;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_TAB;
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.GL_FILL;
 import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
 import static org.lwjgl.opengl.GL11.GL_LINE;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.glPolygonMode;
-import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,10 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.lwjgl.Sys;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -25,29 +32,28 @@ import net.sytes.judgeglass.lwjgl.renderEngine.MasterRenderer;
 import net.sytes.judgeglass.lwjgl.renderEngine.Chunk.Chunk;
 import net.sytes.judgeglass.lwjgl.renderEngine.Chunk.ChunkMesh;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Block;
-import net.sytes.judgeglass.lwjgl.renderEngine.File.Save;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Camera;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Entity;
-import net.sytes.judgeglass.lwjgl.renderEngine.entities.Light;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontMeshCreator.FontType;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontMeshCreator.GUIText;
 import net.sytes.judgeglass.lwjgl.renderEngine.fontRendering.TextMaster;
 import net.sytes.judgeglass.lwjgl.renderEngine.gui.GuiRenderer;
 import net.sytes.judgeglass.lwjgl.renderEngine.gui.GuiTexture;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.RawModel;
+import net.sytes.judgeglass.lwjgl.renderEngine.models.Texture;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.textures.ModelTexture;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.GameStatus;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.KeyboardHandler;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.Maths;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.MusicManager;
-import net.sytes.judgeglass.lwjgl.renderEngine.tools.PerlinNoiseGenerator;
-import net.sytes.judgeglass.lwjgl.renderEngine.world.TreeGenerator;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.Vector3;
 
 public class GameLoop {
 
-	static long lastFrame;
+	static double lastTime;
 	static int fps;
-	static long lastFPS;
+	static double lastFPS;
 
 	private static Loader loader;
 	private static List<Entity> entities = Collections.synchronizedList(new ArrayList<Entity>());
@@ -55,13 +61,13 @@ public class GameLoop {
 	private static List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<Vector3f>());
 	private static Vector3f camPos = new Vector3f(0, 0, 0);
 	private static Random rand = new Random();
-	
+
 	private static final int WORLD = 16 * 16; // WORLD SIZE = 1024
 	private static final int viewDistance = 1;
 	public static int seed = 0;
+	private static int tick = 0;
 	private static String[] args;
-	
-	
+
 	private static boolean rendered = false;
 	private static boolean close = false;
 	public static boolean playing = false;
@@ -69,28 +75,30 @@ public class GameLoop {
 	public static boolean menuOpen = false;
 	public static boolean polyMode = false;
 	public static boolean updateView = false;
-	
+
 	public static void main(String[] args) {
-		DisplayManager.createDisplay();
 		GameLoop.args = args;
+		DisplayManager.createDisplay();
 	}
 
 	public static void start() {
-		
-		if(args.length > 0) {
-			if(args[0].equals("-s")) {
+		GL.createCapabilities();
+		if (args.length > 0) {
+			if (args[0].equals("-s")) {
 				seed = Maths.generateSeed(args[1]);
 			}
-		}else {
+		} else {
 			seed = rand.nextInt();
 		}
-		
+
 		System.out.println("SEED: " + seed);
 		System.out.println("Working DIR: " + System.getProperty("user.dir"));
 		playing = true;
-		new Thread(() -> {
-			MusicManager.play();
-		}).start();
+		/*
+		 * Thread music = new Thread(() -> { MusicManager.play(); });
+		 * 
+		 * music.setName("Music Thread"); music.start();
+		 */
 
 		loader = new Loader();
 		GameStatus.initFont(loader);
@@ -100,8 +108,7 @@ public class GameLoop {
 
 		MasterRenderer renderer = new MasterRenderer();
 
-		getDelta();
-		lastFPS = getTime();
+		lastFPS = GLFW.glfwGetTime();
 
 		List<GuiTexture> guis = new ArrayList<GuiTexture>();
 
@@ -127,28 +134,32 @@ public class GameLoop {
 		GameStatus.drawVersion();
 
 		ModelTexture mT = new ModelTexture(loader.loadTexture("atlas"));
-		FontType loadFont = new FontType(loader.loadTexture("sans"), new File("assets/fonts/sans.fnt"));
-		
+
+		Texture t = new Texture();
+		FontType loadFont = new FontType(t.loadTexture("assets/textures/sans.png", GL_NEAREST),
+				new File("assets/fonts/sans.fnt"));
+
 		camPos = camera.getPosition();
+
 		
-		int tick = 0;
 		int index = 0;
-		while (!Display.isCloseRequested() && !DisplayManager.awtCloseRequested) {
-			
-			if(updateView) {
-				glViewport(0, 0, DisplayManager.cW, DisplayManager.cH);
-				updateView = false;
-			}
-			
+
+		while (!glfwWindowShouldClose(DisplayManager.window)) {
+			glfwSwapBuffers(DisplayManager.window);
+			input();
+
 			camera.move();
 			camera.setPosition(camPos);
 
-			renderer.render(camera);	
-			
+			renderer.render(camera);
+
 			if (index < chunks.size() && tick > 20) {
-				RawModel rModel = loader.loadToVAOChunk(chunks.get(index).positions, chunks.get(index).normals, chunks.get(index).uvs);
+				RawModel rModel = loader.loadToVAOChunk(chunks.get(index).positions, chunks.get(index).normals,
+						chunks.get(index).uvs);
 				TextureModel txt = new TextureModel(rModel, mT);
-				Entity e = new Entity(txt, chunks.get(index).chunk.origin, chunks.get(index));
+				Entity e = new Entity(txt,
+						new Vector3(chunks.get(index).chunk.x, chunks.get(index).chunk.y, chunks.get(index).chunk.z),
+						chunks.get(index));
 				if (!entities.contains(e))
 					entities.add(e);
 
@@ -160,7 +171,7 @@ public class GameLoop {
 			}
 
 			for (Entity e : entities) {
-				Vector3f origin = e.getPosition();
+				Vector3 origin = e.getPosition();
 
 				int distX = (int) (camPos.x - origin.x);
 				int distZ = (int) (camPos.z - origin.z);
@@ -175,32 +186,6 @@ public class GameLoop {
 
 				if ((distX <= (WORLD - (4 * 16)) * viewDistance) && (distZ <= (WORLD - (4 * 16)) * viewDistance)) {
 					renderer.processEntity(e);
-				}
-			}
-
-			
-			while (Keyboard.next()) {
-				if (Keyboard.isKeyDown(Keyboard.KEY_F)) {
-					chunks.remove(entities.get(10).getMesh());
-					entities.remove(entities.get(10));
-				}else if(Keyboard.isKeyDown(Keyboard.KEY_E)){
-					if(inventoryOpen) {
-						Mouse.setGrabbed(true);
-						inventoryOpen = false;
-					}else {
-						Mouse.setGrabbed(false);
-						inventoryOpen = true;
-					}
-				}else if(Keyboard.isKeyDown(Keyboard.KEY_P)) {
-					if(polyMode) {
-						glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-						polyMode = false;
-					}else {
-						glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-						polyMode = true;
-					}
-				}else if(Keyboard.isKeyDown(Keyboard.KEY_TAB)) {
-					Mouse.setGrabbed(false);
 				}
 			}
 
@@ -224,34 +209,39 @@ public class GameLoop {
 				rendered = true;
 			}
 
-			if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-					break;
+			if (KeyboardHandler.isPressed(GLFW_KEY_ESCAPE)) {
+				break;
 			}
-			
 
 			if (!rendered || chunks.size() < 1023) {
-				System.out.println(String.format("Building Terrain: %d%%", (int)(((float)chunks.size() / 1024) * 100)));
-				
+				System.out
+						.println(String.format("Building Terrain: %d%%", (int) (((float) chunks.size() / 1024) * 100)));
+
 				GUIText text = new GUIText("Building Terrain", 1.25f, loadFont, new Vector2f(.865f, -1f), 1f, false);
 				text.setColour(1, 1, 1);
-				
-				GUIText text2 = new GUIText((int)(((float)chunks.size() / 1024) * 100) + "%", 1.25f, loadFont, new Vector2f(.955f, -1.1f), 1f, false);
+
+				GUIText text2 = new GUIText((int) (((float) chunks.size() / 1024) * 100) + "%", 1.25f, loadFont,
+						new Vector2f(.955f, -1.1f), 1f, false);
 				text2.setColour(1, 1, 1);
 
 				guiRenderer.render(loadBackground);
 				TextMaster.render();
 				TextMaster.removeText(text);
 				TextMaster.removeText(text2);
-				
+
 				text = null;
 				text2 = null;
 			} else {
 				loadBackground.clear();
 			}
 
+			//GameStatus.showGameStatus();
+
 			guiRenderer.render(guis);
 			TextMaster.render();
-			DisplayManager.updateDisplay();
+
+			glfwPollEvents();
+
 			updateFPS();
 
 			if (tick > 500) {
@@ -260,42 +250,55 @@ public class GameLoop {
 				tick++;
 			}
 		}
-		
+
 		close = true;
 		guiRenderer.clean();
 		TextMaster.cleanUp();
 		MusicManager.stop();
 		renderer.clean();
 		loader.clean();
-		DisplayManager.closeDisplay();
-		DisplayManager.closeAWT();
-	}
-
-	public static int getDelta() {
-		long time = getTime();
-		int delta = (int) (time - lastFrame);
-		lastFrame = time;
-
-		return delta;
-	}
-
-	public static long getTime() {
-		return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+		DisplayManager.destroy();
 	}
 
 	public static void updateFPS() {
-		if (getTime() - lastFPS > 1000) {
-			GameStatus.FPS = fps;
-			System.out.println("FPS: " + fps + "   Pos: " + camPos);
-			fps = 0;
-			lastFPS += 1000;
-		}
+		double currentTime = glfwGetTime();
 		fps++;
+		if (currentTime - lastTime >= 1.0) { // If last prinf() was more than 1 sec ago
+			// printf and reset timer
+			System.out.println(String.format("%f ms/frame(FPS: %f)", 1000.0 / (fps), (float)fps));
+			fps = 0;
+			lastTime += 1.0;
+		}
+	}
+
+	private static void input() {
+		if (KeyboardHandler.isPressed(GLFW_KEY_F)) {
+			chunks.remove(entities.get(10).getMesh());
+			entities.remove(entities.get(10));
+		} else if (KeyboardHandler.isClicked(GLFW_KEY_E)) {
+			if (inventoryOpen) {
+				DisplayManager.hideMouse(true);
+				inventoryOpen = false;
+			} else {
+				DisplayManager.hideMouse(false);
+				inventoryOpen = true;
+			}
+		} else if (KeyboardHandler.isPressed(GLFW_KEY_P)) {
+			if (polyMode) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				polyMode = false;
+			} else {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				polyMode = true;
+			}
+		} else if (KeyboardHandler.isPressed(GLFW_KEY_TAB)) {
+			DisplayManager.hideMouse(false);
+		}
 	}
 
 	private static void makeChunks() {
-		new Thread(() -> {
-			PerlinNoiseGenerator perlinNoise = new PerlinNoiseGenerator(0, 0, 0, seed);
+		Thread t = new Thread(() -> {
+			//PerlinNoiseGenerator perlinNoise = new PerlinNoiseGenerator(0, 0, 0, seed);
 			while (!close && chunks.size() <= 400) {
 
 				List<Block> blocks = null;
@@ -308,58 +311,74 @@ public class GameLoop {
 								for (int i = 0; i < 16; i++) {
 									for (int j = 0; j < 16; j++) {
 
-										int noise = (int) perlinNoise.generateHeight(i + (x * 16), j + (z * 16)) + 35;
-										// int noise = 25;
-										
-										Block b;
-										boolean noTree = false;
-										;
-										if (noise <= 21) {
-											b = new Block(i, noise, j, Block.Type.SAND, true);
+										// int noise = (int) perlinNoise.generateHeight(i + (x * 16), j + (z * 16)) +
+										// 35;
+										int noise = 25;
 
-											if (b.y <= 21) {
-												int ii = 1;
-												while (b.y + ii < 22) {
-													blocks.add(new Block(b.x, b.y + ii, b.z, Block.Type.WATER, true));
-													ii++;
-												}
+										blocks.add(new Block(i, noise, j, Block.Type.GRASS, true));
+										blocks.add(new Block(i, noise - 1, j, Block.Type.DIRT, true));
+
+										int index = 2;
+										while (index <= 23) {
+											if (x == 15) {
+												if (i == 15)
+													blocks.add(new Block(i, noise - index, j, Block.Type.COBBLESTONE,
+															true));
+											} else if (x == -16) {
+												if (i == 0)
+													blocks.add(new Block(i, noise - index, j, Block.Type.COBBLESTONE,
+															true));
+											} else if (z == 15) {
+												if (j == 15)
+													blocks.add(new Block(i, noise - index, j, Block.Type.COBBLESTONE,
+															true));
+											} else if (z == -16) {
+												if (j == 0)
+													blocks.add(new Block(i, noise - index, j, Block.Type.COBBLESTONE,
+															true));
 											}
-											noTree = true;
-										} else {
-											if (rand.nextInt(50) == 10) {
-												b = new Block(i, noise, j, Block.Type.GLASS, true);
-											}else if(rand.nextInt(20) == 5) {
-												b = new Block(i, noise, j, Block.Type.FARMLAND, true);
-											}
-											else
-												b = new Block(i, noise, j, Block.Type.GRASS, true);
+											index++;
 										}
-										blocks.add(b);
 
-										if (rand.nextInt(200) == 10 && !noTree) {
-											blocks = TreeGenerator.makeTree(new Vector3f(b.x, b.y, b.z), blocks);
-										}
-										
-										blocks.add(new Block(i, b.y-1, j, Block.Type.DIRT, true));
+										/*
+										 * Block b; boolean noTree = false; ; if (noise <= 21) { b = new Block(i, noise,
+										 * j, Block.Type.SAND, true);
+										 * 
+										 * if (b.y <= 21) { int ii = 1; while (b.y + ii < 22) { blocks.add(new
+										 * Block(b.x, b.y + ii, b.z, Block.Type.WATER, true)); ii++; } } noTree = true;
+										 * } else { if (rand.nextInt(50) == 10) { b = new Block(i, noise, j,
+										 * Block.Type.GLASS, true); }else if(rand.nextInt(20) == 5) { b = new Block(i,
+										 * noise, j, Block.Type.FARMLAND, true); } else b = new Block(i, noise, j,
+										 * Block.Type.COBBLESTONE, true); } blocks.add(b);
+										 * 
+										 * if (rand.nextInt(200) == 10 && !noTree) { blocks = TreeGenerator.makeTree(new
+										 * Vector3f(b.x, b.y, b.z), blocks); }else if(rand.nextInt(100) == 20 &&
+										 * !noTree) { blocks.add(new Block(i, noise + 1, j, Block.Type.CHEST, true)); }
+										 * 
+										 * 
+										 * blocks.add(new Block(i, b.y-1, j, Block.Type.DIRT, true));
+										 */
 
-										/*int index = 1;
-										
-										 while (true) { if (b.y - index <= 24) { break; }
-										 
-										 if (index <= 3) { blocks.add(new Block(b.x, b.y - index, b.z,
-										  Block.Type.DIRT, true)); index++; continue; }
-										  
-										  if (b.y - index <= 20) { if (rand.nextInt(200) == 10) { blocks.add(new
-										  Block(b.x, b.y - index, b.z, Block.Type.GOLD_BLOCK, true)); index++;
-										  continue; } }
-										  
-										  blocks.add(new Block(b.x, b.y - index, b.z, Block.Type.STONE, true));
-										  index++; }*/
-										 
+										/*
+										 * int index = 1;
+										 * 
+										 * while (true) { if (b.y - index <= 24) { break; }
+										 * 
+										 * if (index <= 3) { blocks.add(new Block(b.x, b.y - index, b.z,
+										 * Block.Type.DIRT, true)); index++; continue; }
+										 * 
+										 * if (b.y - index <= 20) { if (rand.nextInt(200) == 10) { blocks.add(new
+										 * Block(b.x, b.y - index, b.z, Block.Type.GOLD_BLOCK, true)); index++;
+										 * continue; } }
+										 * 
+										 * blocks.add(new Block(b.x, b.y - index, b.z, Block.Type.STONE, true));
+										 * index++; }
+										 */
+
 									}
 								}
 
-								Chunk c = new Chunk(blocks, new Vector3f(x * 16, ny * 16, z * 16));
+								Chunk c = new Chunk(blocks, x * 16, ny * 16, z * 16);
 								ChunkMesh mesh = new ChunkMesh(c);
 								chunks.add(mesh);
 								usedPos.add(new Vector3f(x * 16, ny * 16, z * 16));
@@ -367,8 +386,10 @@ public class GameLoop {
 						}
 					}
 			}
-
-		}).start();
+			System.out.println("Chunk Thread DONE!");
+		});
+		t.setName("Chunk Thread");
+		t.start();
 
 	}
 }

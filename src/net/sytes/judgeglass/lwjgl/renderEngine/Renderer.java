@@ -3,6 +3,7 @@ package net.sytes.judgeglass.lwjgl.renderEngine;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.glBindTexture;
@@ -19,10 +20,11 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.Entity;
+import net.sytes.judgeglass.lwjgl.renderEngine.models.Texture;
 import net.sytes.judgeglass.lwjgl.renderEngine.models.TextureModel;
 import net.sytes.judgeglass.lwjgl.renderEngine.shaders.StaticShader;
 import net.sytes.judgeglass.lwjgl.renderEngine.textures.ModelTexture;
@@ -38,8 +40,8 @@ public class Renderer {
 
 	private StaticShader shader;
 	
-	private Loader loader = new Loader();
-	ModelTexture texture = new ModelTexture(loader.loadTexture("atlas"));
+	Texture tL = new Texture();
+	ModelTexture texture = new ModelTexture(tL.loadTexture("assets/textures/atlas.png", GL_NEAREST));
 
 	public Renderer(StaticShader shader) {
 		this.shader = shader;
@@ -76,7 +78,6 @@ public class Renderer {
 		
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture.getID());
-
 	}
 
 	private void unbindTextureModel() {
@@ -87,7 +88,8 @@ public class Renderer {
 	}
 
 	private void prepareInstance(Entity entity) {
-		Matrix4f transformMatrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getRotX(),
+		Matrix4f transformMatrix = Maths.createTransformationMatrix(new Vector3f(entity.getPosition().x,
+												entity.getPosition().y, entity.getPosition().z), entity.getRotX(),
 				entity.getRotY(), entity.getRotZ(), entity.getScale());
 
 		shader.loadTransformationMatrix(transformMatrix);
@@ -106,7 +108,7 @@ public class Renderer {
 	}
 
 	private void createProjectionMatrix() {
-		float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
+		float aspectRatio = (float) DisplayManager.WIDTH / (float) DisplayManager.HEIGHT;
 		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
 		float x_scale = y_scale / aspectRatio;
 		float frustum_length = FAR - NEAR;
