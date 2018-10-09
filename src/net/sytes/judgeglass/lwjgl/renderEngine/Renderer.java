@@ -61,7 +61,7 @@ public class Renderer {
 				prepareInstance(entity);
 				 //glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(),
 				 //GL11.GL_UNSIGNED_INT, 0);
-				glDrawArrays(GL_TRIANGLES, 0, model.getRawModel().getVertexCount());
+				glDrawArrays(GL_TRIANGLES, 0, model.getRawModel().getVertexCount() / 3);
 			}
 
 			unbindTextureModel();

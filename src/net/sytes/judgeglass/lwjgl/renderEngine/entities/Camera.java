@@ -36,7 +36,7 @@ public class Camera {
 	public void move() {
 		GameStatus.cameraAngle = new Vector2f(rotX, rotY);
 		
-		if(!GameLoop.inventoryOpen) {
+		if(!GameLoop.inventoryOpen || !GameLoop.lockCamera) {
 			if(rotX < 90)
 				rotX += MouseHandler.getDY() * 0.08f;
 			else

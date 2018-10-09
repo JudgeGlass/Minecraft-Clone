@@ -7,6 +7,7 @@ import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Block;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Vertex;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.AbstractCube;
 import net.sytes.judgeglass.lwjgl.renderEngine.entities.WaterCube;
+import net.sytes.judgeglass.lwjgl.renderEngine.entities.XCube;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.Vector3;
 import net.sytes.judgeglass.lwjgl.renderEngine.world.BlockTextureHandler;
 
@@ -60,6 +61,10 @@ public class ChunkMesh {
 			
 			blockHandler.setType(blockI.type);
 			
+			boolean isX = ((blockHandler.getType() == Block.Type.TALLGRASS) ||
+					(blockHandler.getType() == Block.Type.YELLOWFLOWER) ||
+					(blockHandler.getType() == Block.Type.REDFLOWER));
+			
 			if(blockHandler.getType() == Block.Type.OAK_LEAVES) {
 				ny = false;
 			}
@@ -67,6 +72,8 @@ public class ChunkMesh {
 			if(blockI.hideFaces) {
 				for (int j = 0; j < chunk.blocks.size(); j++) {
 					Block blockJ = chunk.blocks.get(j);
+					if(blockJ.type == Block.Type.TALLGRASS || blockJ.type == Block.Type.YELLOWFLOWER 
+							|| blockJ.type == Block.Type.REDFLOWER)continue;
 					
 					boolean isWater = ((blockJ.type == Block.Type.WATER) && !(blockI.type == Block.Type.WATER) || (blockJ.type == Block.Type.FARMLAND) && !(blockI.type == Block.Type.FARMLAND));
 					boolean isGlass = ((blockJ.type == Block.Type.GLASS));
@@ -97,13 +104,13 @@ public class ChunkMesh {
 	
 					// PZ
 					if (((blockI.x) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z + 1) == (blockJ.z))) {
-						if(!isWater && !isGlass)
+						if(!isWater && !isGlass && !isX)
 							pz = true;
 					}
 	
 					// NZ
 					if (((blockI.x) == (blockJ.x)) && ((blockI.y) == (blockJ.y)) && ((blockI.z - 1) == (blockJ.z))) {
-						if(!isWater && !isGlass)
+						if(!isWater && !isGlass && !isX)
 							nz = true;
 					}
 	
@@ -114,7 +121,7 @@ public class ChunkMesh {
 
 			
 			
-			if (!px) {
+			if (!px && !isX) {
 				for (int k = 0; k < 6; k++) {
 					vertices.add(
 							new Vertex(
@@ -124,7 +131,7 @@ public class ChunkMesh {
 				}
 			}
 
-			if (!nx) {
+			if (!nx && !isX) {
 				for (int k = 0; k < 6; k++) {
 					vertices.add(
 							new Vertex(
@@ -142,7 +149,7 @@ public class ChunkMesh {
 				}
 			}
 
-			if (!py) {
+			if (!py && !isX) {
 				for (int k = 0; k < 6; k++) {
 					if(blockHandler.getType() == Block.Type.WATER || blockHandler.getType() == Block.Type.FARMLAND) {
 						vertices.add(
@@ -160,7 +167,7 @@ public class ChunkMesh {
 				}
 			}
 
-			if (!ny) {
+			if (!ny && !isX) {
 				for (int k = 0; k < 6; k++) {
 					vertices.add(
 							new Vertex(
@@ -171,22 +178,42 @@ public class ChunkMesh {
 			}
 
 			if (!pz) {
-				for (int k = 0; k < 6; k++) {
-					vertices.add(
-							new Vertex(
-									new Vector3(AbstractCube.PZ_POS[k].x + blockI.x,
-											AbstractCube.PZ_POS[k].y + blockI.y, AbstractCube.PZ_POS[k].z + blockI.z), // Front or back?
-									blockHandler.frontFace[k], AbstractCube.NORMALS[k]));
+				if(!isX) {
+					for (int k = 0; k < 6; k++) {
+						vertices.add(
+								new Vertex(
+										new Vector3(AbstractCube.PZ_POS[k].x + blockI.x,
+												AbstractCube.PZ_POS[k].y + blockI.y, AbstractCube.PZ_POS[k].z + blockI.z), // Front or back?
+										blockHandler.frontFace[k], AbstractCube.NORMALS[k]));
+					}
+				}else {
+					for (int k = 0; k < 6; k++) {
+						vertices.add(
+								new Vertex(
+										new Vector3(XCube.PZ_POS[k].x + blockI.x,
+												XCube.PZ_POS[k].y + blockI.y - 0.13f, XCube.PZ_POS[k].z + blockI.z), // Front or back?
+										blockHandler.frontFace[k], XCube.NORMALS[k]));
+					}
 				}
 			}
 
 			if (!nz) {
-				for (int k = 0; k < 6; k++) {
-					vertices.add(
-							new Vertex(
-									new Vector3(AbstractCube.NZ_POS[k].x + blockI.x,
-											AbstractCube.NZ_POS[k].y + blockI.y, AbstractCube.NZ_POS[k].z + blockI.z), // Front or back?
-									blockHandler.backFace[k], AbstractCube.NORMALS[k]));
+				if(!isX) {
+					for (int k = 0; k < 6; k++) {
+						vertices.add(
+								new Vertex(
+										new Vector3(AbstractCube.NZ_POS[k].x + blockI.x,
+												AbstractCube.NZ_POS[k].y + blockI.y, AbstractCube.NZ_POS[k].z + blockI.z), // Front or back?
+										blockHandler.backFace[k], AbstractCube.NORMALS[k]));
+					}
+				}else {
+					for (int k = 0; k < 6; k++) {
+						vertices.add(
+								new Vertex(
+										new Vector3(XCube.NZ_POS[k].x + blockI.x,
+												XCube.NZ_POS[k].y + blockI.y - 0.13f, XCube.NZ_POS[k].z + blockI.z), // Front or back?
+										blockHandler.frontFace[k], XCube.NORMALS[k]));
+					}
 				}
 			}
 		}

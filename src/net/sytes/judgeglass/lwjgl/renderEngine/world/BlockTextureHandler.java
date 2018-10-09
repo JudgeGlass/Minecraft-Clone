@@ -12,9 +12,12 @@ import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockGrass;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockOakLeaves;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockOakLog;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockOakWood;
+import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockRedFlower;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockSand;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockStone;
+import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockTallGrass;
 import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockWater;
+import net.sytes.judgeglass.lwjgl.renderEngine.Cube.Blocks.BlockYellowFlower;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.Vector2;
 
 public class BlockTextureHandler {
@@ -99,6 +102,18 @@ public class BlockTextureHandler {
 		case COBBLESTONE:
 			setFaces(BlockCobbleStone.UV_FRONT, BlockCobbleStone.UV_BACK, BlockCobbleStone.UV_TOP, BlockCobbleStone.UV_BOTTOM,
 					BlockCobbleStone.UV_LEFT, BlockCobbleStone.UV_RIGHT);
+			break;
+			
+		case TALLGRASS:
+			setFaces(BlockTallGrass.UV_FRONT, BlockTallGrass.UV_BACK, null, null, null, null);
+			break;
+		
+		case YELLOWFLOWER:
+			setFaces(BlockYellowFlower.UV_FRONT, BlockYellowFlower.UV_BACK, null, null, null, null);
+			break;
+			
+		case REDFLOWER:
+			setFaces(BlockRedFlower.UV_FRONT, BlockRedFlower.UV_BACK, null, null, null, null);
 			break;
 
 		default:

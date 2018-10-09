@@ -18,8 +18,12 @@ public class KeyboardHandler extends GLFWKeyCallback {
 	@Override
 	public void invoke(long window, int key, int scancode, int action, int mods) {
 		// TODO Auto-generated method stub
-		keys[key] = action != GLFW_RELEASE;
-		if(action == GLFW_RELEASE && pressed.contains(new Integer(key))) pressed.remove(new Integer(key));
+		try {
+			keys[key] = action != GLFW_RELEASE;
+			if(action == GLFW_RELEASE && pressed.contains(new Integer(key))) pressed.remove(new Integer(key));
+		}catch(Exception e) {
+			return;
+		}
 	}
 
 	public static boolean isPressed(int key) {

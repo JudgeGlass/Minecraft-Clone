@@ -129,6 +129,20 @@
 	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/LWJGL3/lwjgl-zstd-natives-windows.jar"/>
 	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/LWJGL3/lwjgl-zstd-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/hdwil/Documents/lwjgl-2.9.3/jar/lwjgl_util.jar"/>
-	<classpathentry kind="lib" path="C:/Users/hdwil/Downloads/slick-util.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Downloads/slick-util.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/hdwil/Documents/lwjgl-2.9.3/native/windows"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Downloads/TEsT/easyogg.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Downloads/TEsT/jogg-0.0.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Downloads/TEsT/jorbis-0.0.15.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Downloads/TEsT/startup2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Downloads/SoundSystem.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Downloads/CodecJOrbis.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Downloads/LibraryJavaSound.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hdwil/Downloads/LibraryLWJGLOpenAL.jar"/>
+	<classpathentry kind="lib" path="internal"/>
+	<classpathentry kind="lib" path="music"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

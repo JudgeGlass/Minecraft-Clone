@@ -47,7 +47,9 @@ import net.sytes.judgeglass.lwjgl.renderEngine.tools.GameStatus;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.KeyboardHandler;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.Maths;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.MusicManager;
+import net.sytes.judgeglass.lwjgl.renderEngine.tools.PerlinNoiseGenerator;
 import net.sytes.judgeglass.lwjgl.renderEngine.tools.Vector3;
+import net.sytes.judgeglass.lwjgl.renderEngine.world.TreeGenerator;
 
 public class GameLoop {
 
@@ -57,7 +59,7 @@ public class GameLoop {
 
 	private static Loader loader;
 	private static List<Entity> entities = Collections.synchronizedList(new ArrayList<Entity>());
-	private static List<ChunkMesh> chunks = Collections.synchronizedList(new ArrayList<ChunkMesh>());
+	public static List<ChunkMesh> chunks = Collections.synchronizedList(new ArrayList<ChunkMesh>());
 	private static List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<Vector3f>());
 	private static Vector3f camPos = new Vector3f(0, 0, 0);
 	private static Random rand = new Random();
@@ -75,6 +77,7 @@ public class GameLoop {
 	public static boolean menuOpen = false;
 	public static boolean polyMode = false;
 	public static boolean updateView = false;
+	public static boolean lockCamera = false;
 
 	public static void main(String[] args) {
 		GameLoop.args = args;
@@ -83,22 +86,14 @@ public class GameLoop {
 
 	public static void start() {
 		GL.createCapabilities();
-		if (args.length > 0) {
-			if (args[0].equals("-s")) {
-				seed = Maths.generateSeed(args[1]);
-			}
-		} else {
-			seed = rand.nextInt();
-		}
+	
+		seed = rand.nextInt();
 
 		System.out.println("SEED: " + seed);
 		System.out.println("Working DIR: " + System.getProperty("user.dir"));
 		playing = true;
-		/*
-		 * Thread music = new Thread(() -> { MusicManager.play(); });
-		 * 
-		 * music.setName("Music Thread"); music.start();
-		 */
+		
+		
 
 		loader = new Loader();
 		GameStatus.initFont(loader);
@@ -147,9 +142,11 @@ public class GameLoop {
 		while (!glfwWindowShouldClose(DisplayManager.window)) {
 			glfwSwapBuffers(DisplayManager.window);
 			input();
+			
 
 			camera.move();
 			camera.setPosition(camPos);
+
 
 			renderer.render(camera);
 
@@ -254,7 +251,7 @@ public class GameLoop {
 		close = true;
 		guiRenderer.clean();
 		TextMaster.cleanUp();
-		MusicManager.stop();
+		//MusicManager.stop();
 		renderer.clean();
 		loader.clean();
 		DisplayManager.destroy();
@@ -266,6 +263,8 @@ public class GameLoop {
 		if (currentTime - lastTime >= 1.0) { // If last prinf() was more than 1 sec ago
 			// printf and reset timer
 			System.out.println(String.format("%f ms/frame(FPS: %f)", 1000.0 / (fps), (float)fps));
+			System.out.println(String.format("Total: %.3fMB / %.3fMB",((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) 
+					/ (1024f * 1024f)),	Runtime.getRuntime().totalMemory() / (1024f * 1024f)));
 			fps = 0;
 			lastTime += 1.0;
 		}
@@ -283,7 +282,7 @@ public class GameLoop {
 				DisplayManager.hideMouse(false);
 				inventoryOpen = true;
 			}
-		} else if (KeyboardHandler.isPressed(GLFW_KEY_P)) {
+		} else if (KeyboardHandler.isClicked(GLFW_KEY_P)) {
 			if (polyMode) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				polyMode = false;
@@ -292,13 +291,14 @@ public class GameLoop {
 				polyMode = true;
 			}
 		} else if (KeyboardHandler.isPressed(GLFW_KEY_TAB)) {
+			lockCamera = true;
 			DisplayManager.hideMouse(false);
 		}
 	}
 
 	private static void makeChunks() {
 		Thread t = new Thread(() -> {
-			//PerlinNoiseGenerator perlinNoise = new PerlinNoiseGenerator(0, 0, 0, seed);
+			PerlinNoiseGenerator perlinNoise = new PerlinNoiseGenerator(0, 0, 0, seed);
 			while (!close && chunks.size() <= 400) {
 
 				List<Block> blocks = null;
@@ -311,69 +311,50 @@ public class GameLoop {
 								for (int i = 0; i < 16; i++) {
 									for (int j = 0; j < 16; j++) {
 
-										// int noise = (int) perlinNoise.generateHeight(i + (x * 16), j + (z * 16)) +
-										// 35;
-										int noise = 25;
+										int noise = (int) perlinNoise.generateHeight(i + (x * 16), j + (z * 16)) + 35;
+										// int noise = 25;
 
-										blocks.add(new Block(i, noise, j, Block.Type.GRASS, true));
-										blocks.add(new Block(i, noise - 1, j, Block.Type.DIRT, true));
+										Block b;
+										boolean noTree = false;
+										;
+										if (noise <= 21) {
+											b = new Block(i, noise, j, Block.Type.SAND, true);
 
-										int index = 2;
-										while (index <= 23) {
-											if (x == 15) {
-												if (i == 15)
-													blocks.add(new Block(i, noise - index, j, Block.Type.COBBLESTONE,
-															true));
-											} else if (x == -16) {
-												if (i == 0)
-													blocks.add(new Block(i, noise - index, j, Block.Type.COBBLESTONE,
-															true));
-											} else if (z == 15) {
-												if (j == 15)
-													blocks.add(new Block(i, noise - index, j, Block.Type.COBBLESTONE,
-															true));
-											} else if (z == -16) {
-												if (j == 0)
-													blocks.add(new Block(i, noise - index, j, Block.Type.COBBLESTONE,
-															true));
+											if (b.y <= 21) {
+												int ii = 1;
+												while (b.y + ii < 22) {
+													blocks.add(new Block(b.x, b.y + ii, b.z, Block.Type.WATER, true));
+													ii++;
+												}
 											}
-											index++;
+											noTree = true;
+										} else {
+											if (rand.nextInt(50) == 10) {
+												b = new Block(i, noise, j, Block.Type.FARMLAND, true);
+											}
+											else
+												b = new Block(i, noise, j, Block.Type.GRASS, true);
+										}
+										blocks.add(b);
+										
+										if(!noTree) {
+											if(rand.nextInt(100) == 23) {
+												blocks.add(new Block(i, noise+1, j, Block.Type.YELLOWFLOWER, true));
+											}
+											else if(rand.nextInt(100) == 33) {
+												blocks.add(new Block(i, noise+1, j, Block.Type.TALLGRASS, true));
+											}else if(rand.nextInt(100) == 63) {
+												blocks.add(new Block(i, noise+1, j, Block.Type.REDFLOWER, true));
+											}
 										}
 
-										/*
-										 * Block b; boolean noTree = false; ; if (noise <= 21) { b = new Block(i, noise,
-										 * j, Block.Type.SAND, true);
-										 * 
-										 * if (b.y <= 21) { int ii = 1; while (b.y + ii < 22) { blocks.add(new
-										 * Block(b.x, b.y + ii, b.z, Block.Type.WATER, true)); ii++; } } noTree = true;
-										 * } else { if (rand.nextInt(50) == 10) { b = new Block(i, noise, j,
-										 * Block.Type.GLASS, true); }else if(rand.nextInt(20) == 5) { b = new Block(i,
-										 * noise, j, Block.Type.FARMLAND, true); } else b = new Block(i, noise, j,
-										 * Block.Type.COBBLESTONE, true); } blocks.add(b);
-										 * 
-										 * if (rand.nextInt(200) == 10 && !noTree) { blocks = TreeGenerator.makeTree(new
-										 * Vector3f(b.x, b.y, b.z), blocks); }else if(rand.nextInt(100) == 20 &&
-										 * !noTree) { blocks.add(new Block(i, noise + 1, j, Block.Type.CHEST, true)); }
-										 * 
-										 * 
-										 * blocks.add(new Block(i, b.y-1, j, Block.Type.DIRT, true));
-										 */
+										if (rand.nextInt(200) == 10 && !noTree) {
+											blocks = TreeGenerator.makeTree(new Vector3f(b.x, b.y, b.z), blocks);
+										}
+										
+										blocks.add(new Block(i, b.y-1, j, Block.Type.DIRT, true));
 
-										/*
-										 * int index = 1;
-										 * 
-										 * while (true) { if (b.y - index <= 24) { break; }
-										 * 
-										 * if (index <= 3) { blocks.add(new Block(b.x, b.y - index, b.z,
-										 * Block.Type.DIRT, true)); index++; continue; }
-										 * 
-										 * if (b.y - index <= 20) { if (rand.nextInt(200) == 10) { blocks.add(new
-										 * Block(b.x, b.y - index, b.z, Block.Type.GOLD_BLOCK, true)); index++;
-										 * continue; } }
-										 * 
-										 * blocks.add(new Block(b.x, b.y - index, b.z, Block.Type.STONE, true));
-										 * index++; }
-										 */
+
 
 									}
 								}

@@ -1,14 +1,18 @@
 package net.sytes.judgeglass.lwjgl.renderEngine.tools;
 
-import java.io.IOException;
-import java.util.Random;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 
-import org.newdawn.slick.openal.Audio;
-import org.newdawn.slick.openal.AudioLoader;
-import org.newdawn.slick.util.ResourceLoader;
+import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
+import paulscode.sound.SoundSystemException;
+import paulscode.sound.codecs.CodecJOrbis;
+import paulscode.sound.libraries.LibraryJavaSound;
 
 public class MusicManager {
-	private static Audio oggEffect;
+	
 	
 	private static String[] musicFiles = {
 			"creative1.ogg",
@@ -27,19 +31,28 @@ public class MusicManager {
 	
 	
 	public static void play() {
-		Random rand = new Random();
+		try
+		{
+		    SoundSystemConfig.addLibrary( LibraryJavaSound.class );
+		    SoundSystemConfig.setCodec( "ogg", CodecJOrbis.class );	
+		}
+		catch( SoundSystemException e )
+		{
+		    System.err.println("error linking with the plug-ins" );
+		}
+		SoundSystem mySoundSystem = new SoundSystem();
+		
 		try {
-			String musicFile = musicFiles[rand.nextInt(musicFiles.length)];
-			System.out.println("Current Music: " + musicFile);
-			oggEffect = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream("music/" + musicFile));
-			oggEffect.playAsMusic(1.0f, 1.0f, true);
-		} catch (IOException e) {
+			mySoundSystem.backgroundMusic("OGG Music", new File("music/hal1.ogg").toURI().toURL(), "hal1.ogg", true);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	public static void stop() {
-		if(oggEffect != null)
-			oggEffect.stop();
-	}
+		mySoundSystem.setVolume("OGG Music", 100);
+		mySoundSystem.play("OGG Music");
+		
+		mySoundSystem.cleanup();
+    }
+ 
+    
 }

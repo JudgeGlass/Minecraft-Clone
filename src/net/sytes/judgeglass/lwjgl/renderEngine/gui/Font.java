@@ -8,13 +8,13 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.opengl.GL11;
 
-import net.sytes.judgeglass.lwjgl.renderEngine.models.Texture;
+import net.sytes.judgeglass.lwjgl.renderEngine.models.OldTexture;
 
 public class Font {
 	private int[] charWidths = new int[256];
 	  private int fontTexture = 0;
 	  
-	  public Font(String name, Texture textures)
+	  public Font(String name, OldTexture textures)
 	  {
 		BufferedImage img;
 	    try
